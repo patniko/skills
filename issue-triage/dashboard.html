@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Triage Dashboard</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --red: #f85149;
+            --orange: #d29922;
+            --yellow: #e3b341;
+            --green: #3fb950;
+            --purple: #a371f7;
+            --pink: #db61a2;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        h1 { font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .meta { color: var(--text-muted); font-size: 14px; }
+        
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0;
+        }
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Cards & Grid */
+        .grid { display: grid; gap: 16px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+        
+        @media (max-width: 1200px) {
+            .grid-4, .grid-6 { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4, .grid-6 { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .card h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-value {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .card-sub {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        
+        /* Stats Row */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: var(--text-muted); }
+        .stat-value { font-weight: 600; }
+        
+        /* Bar Charts */
+        .bar-chart { margin-top: 12px; }
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .bar-label {
+            width: 100px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .bar-container {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .bar {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: fit-content;
+        }
+        .bar-count {
+            width: 50px;
+            text-align: right;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        
+        /* Issue List */
+        .issue-list { margin-top: 12px; }
+        .issue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .issue-item:hover { background: var(--border); }
+        .issue-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        .issue-number {
+            color: var(--text-muted);
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .issue-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .issue-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .priority-high { background: var(--red); color: white; }
+        .priority-medium { background: var(--orange); color: white; }
+        .priority-low { background: var(--green); color: white; }
+        
+        /* Labels */
+        .label-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .label-tag {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        /* Insights */
+        .insight {
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 0 6px 6px 0;
+        }
+        .insight.warning { border-left-color: var(--orange); }
+        .insight.danger { border-left-color: var(--red); }
+        .insight.success { border-left-color: var(--green); }
+        .insight-title { font-weight: 600; margin-bottom: 4px; }
+        .insight-body { color: var(--text-muted); font-size: 14px; }
+        
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 32px 0 16px;
+        }
+        .section-header h2 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+        
+        /* Progress ring */
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        .progress-ring .bg { stroke: var(--bg-tertiary); }
+        .progress-ring .progress { stroke: var(--accent); stroke-linecap: round; }
+        .progress-ring .value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        /* Buttons */
+        button {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        button:hover { opacity: 0.9; }
+        button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        tr:hover { background: var(--bg-tertiary); }
+        
+        /* Trend indicators */
+        .trend { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
+        .trend.up { color: var(--green); }
+        .trend.down { color: var(--red); }
+        .trend.neutral { color: var(--text-muted); }
+        
+        /* Line/Area Charts */
+        .chart-container {
+            position: relative;
+            height: 100%;
+            min-height: 200px;
+        }
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+        .chart-line {
+            fill: none;
+            stroke-width: 2;
+        }
+        .chart-area {
+            opacity: 0.2;
+        }
+        .chart-dot {
+            fill: var(--bg);
+            stroke-width: 2;
+        }
+        .chart-grid line {
+            stroke: var(--border);
+            stroke-dasharray: 2,2;
+        }
+        .chart-axis text {
+            fill: var(--text-muted);
+            font-size: 11px;
+        }
+        .chart-tooltip {
+            position: absolute;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* SLA gauge */
+        .sla-gauge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .sla-circle {
+            width: 140px;
+            height: 140px;
+            position: relative;
+        }
+        .sla-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        .sla-circle circle {
+            fill: none;
+            stroke-width: 12;
+            stroke-linecap: round;
+        }
+        .sla-circle .bg { stroke: var(--bg-tertiary); }
+        .sla-circle .progress { transition: stroke-dashoffset 0.5s; }
+        .sla-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .sla-value .pct {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .sla-value .label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .sla-details {
+            margin-top: 16px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>📊 Issue Triage Dashboard</h1>
+                <div class="meta" id="repo-info">Loading...</div>
+            </div>
+            <div style="display:flex;gap:12px">
+                <button class="secondary" onclick="document.getElementById('file-input').click()">Load Data</button>
+                <button onclick="window.location.href='viewer.html'">Issue Viewer</button>
+                <input type="file" id="file-input" accept=".json" style="display:none" onchange="loadFile(event)">
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">Overview</button>
+            <button class="tab" onclick="showTab('trends')">📈 Trends</button>
+            <button class="tab" onclick="showTab('health')">Health & Hygiene</button>
+            <button class="tab" onclick="showTab('priority')">Prioritization</button>
+            <button class="tab" onclick="showTab('technical')">Technical Debt</button>
+            <button class="tab" onclick="showTab('engagement')">Engagement</button>
+            <button class="tab" onclick="showTab('insights')">Insights</button>
+        </div>
+        
+        <!-- OVERVIEW TAB -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="grid grid-6" id="overview-stats"></div>
+            
+            <div class="section-header">
+                <h2>🔴 Critical Issues Requiring Attention</h2>
+            </div>
+            <div class="card" id="critical-issues"></div>
+            
+            <div class="grid grid-2" style="margin-top:24px">
+                <div class="card">
+                    <h3>📊 Priority Distribution</h3>
+                    <div id="priority-chart"></div>
+                </div>
+                <div class="card">
+                    <h3>📅 Age Distribution</h3>
+                    <div id="age-chart"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-2" style="margin-top:16px">
+                <div class="card">
+                    <h3>🏷️ Top Labels</h3>
+                    <div id="label-chart"></div>
+                </div>
+                <div class="card">
+                    <h3>⚡ Quick Wins (High Clarity, Easy Effort)</h3>
+                    <div id="quick-wins"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TRENDS TAB -->
+        <div id="tab-trends" class="tab-content">
+            <div class="grid grid-4" id="trends-stats"></div>
+            
+            <div class="grid grid-2" style="margin-top:24px">
+                <div class="card">
+                    <h3>📈 Issues Created Over Time (by week)</h3>
+                    <div id="created-trend-chart" style="height:250px"></div>
+                </div>
+                <div class="card">
+                    <h3>📊 Cumulative Open Issues</h3>
+                    <div id="cumulative-chart" style="height:250px"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-2" style="margin-top:16px">
+                <div class="card">
+                    <h3>⏱️ Time to First Response (by creation week)</h3>
+                    <div id="response-time-chart" style="height:250px"></div>
+                </div>
+                <div class="card">
+                    <h3>📅 Issue Age at Snapshot</h3>
+                    <div id="age-trend-chart" style="height:250px"></div>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h2>📊 SLA Performance</h2>
+            </div>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h3>🎯 Response SLA (Target: 7 days)</h3>
+                    <div id="sla-response"></div>
+                </div>
+                <div class="card">
+                    <h3>🏷️ Triage SLA (Target: 14 days)</h3>
+                    <div id="sla-triage"></div>
+                </div>
+                <div class="card">
+                    <h3>📋 Assignment SLA (Target: 30 days)</h3>
+                    <div id="sla-assignment"></div>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h2>📆 Issues by Month Created</h2>
+            </div>
+            <div class="card" id="monthly-breakdown"></div>
+            
+            <div class="section-header">
+                <h2>🔥 Velocity Metrics</h2>
+            </div>
+            <div class="grid grid-4" id="velocity-stats"></div>
+        </div>
+        
+        <!-- HEALTH TAB -->
+        <div id="tab-health" class="tab-content">
+            <div class="grid grid-4" id="health-stats"></div>
+            
+            <div class="grid grid-2" style="margin-top:24px">
+                <div class="card">
+                    <h3>📅 Issue Age Breakdown</h3>
+                    <div id="age-breakdown"></div>
+                </div>
+                <div class="card">
+                    <h3>🏷️ Labeling Quality</h3>
+                    <div id="label-quality"></div>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h2>🔄 Stalest Issues (No Activity 30+ Days)</h2>
+            </div>
+            <div class="card" id="stale-issues"></div>
+            
+            <div class="section-header">
+                <h2>👋 Unassigned Issues</h2>
+            </div>
+            <div class="card" id="unassigned-issues"></div>
+        </div>
+        
+        <!-- PRIORITY TAB -->
+        <div id="tab-priority" class="tab-content">
+            <div class="grid grid-3" id="priority-stats"></div>
+            
+            <div class="section-header">
+                <h2>🔥 Top 20 Highest Priority Issues</h2>
+            </div>
+            <div class="card" id="top-priority"></div>
+            
+            <div class="section-header">
+                <h2>🤖 Best Candidates for AI/Junior Delegation</h2>
+            </div>
+            <div class="card" id="delegatable"></div>
+            
+            <div class="section-header">
+                <h2>🏢 Enterprise Customer Issues</h2>
+            </div>
+            <div class="card" id="enterprise-issues"></div>
+        </div>
+        
+        <!-- TECHNICAL TAB -->
+        <div id="tab-technical" class="tab-content">
+            <div class="grid grid-3" id="tech-stats"></div>
+            
+            <div class="section-header">
+                <h2>🔒 Security & Stability Issues</h2>
+            </div>
+            <div class="card" id="security-issues"></div>
+            
+            <div class="section-header">
+                <h2>📝 Issues with Clear Reproduction Steps</h2>
+            </div>
+            <div class="card" id="has-repro"></div>
+            
+            <div class="section-header">
+                <h2>❓ Issues Needing More Information</h2>
+            </div>
+            <div class="card" id="needs-info"></div>
+            
+            <div class="section-header">
+                <h2>🔗 Potential Duplicates / Related Issues</h2>
+            </div>
+            <div class="card" id="duplicates"></div>
+        </div>
+        
+        <!-- ENGAGEMENT TAB -->
+        <div id="tab-engagement" class="tab-content">
+            <div class="grid grid-4" id="engagement-stats"></div>
+            
+            <div class="section-header">
+                <h2>🔥 Most Discussed Issues (by Comments)</h2>
+            </div>
+            <div class="card" id="most-comments"></div>
+            
+            <div class="section-header">
+                <h2>👥 Top Contributors</h2>
+            </div>
+            <div class="card" id="contributors"></div>
+            
+            <div class="section-header">
+                <h2>📈 Issue Types</h2>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>🐛 Bugs vs Features</h3>
+                    <div id="type-chart"></div>
+                </div>
+                <div class="card">
+                    <h3>💬 Comment Distribution</h3>
+                    <div id="comment-chart"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- INSIGHTS TAB -->
+        <div id="tab-insights" class="tab-content">
+            <div class="section-header">
+                <h2>💡 Automated Insights & Recommendations</h2>
+            </div>
+            <div id="insights"></div>
+            
+            <div class="section-header">
+                <h2>🎯 Suggested Actions</h2>
+            </div>
+            <div class="grid grid-3" id="actions"></div>
+            
+            <div class="section-header">
+                <h2>📊 Issue Clusters (Common Themes)</h2>
+            </div>
+            <div class="card" id="clusters"></div>
+        </div>
+    </div>
+
+    <script>
+        let data = null;
+        
+        // Auto-load
+        fetch('triage-data.json')
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(json => { data = json; init(); })
+            .catch(() => {
+                document.getElementById('repo-info').textContent = 'No data loaded - click "Load Data"';
+            });
+        
+        function loadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        data = JSON.parse(e.target.result);
+                        init();
+                    } catch (err) {
+                        alert('Invalid JSON file');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+        
+        function showTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+        
+        function init() {
+            document.getElementById('repo-info').textContent = 
+                `${data.metadata.repository} • ${data.issues.length} issues • Generated ${new Date(data.metadata.generated).toLocaleString()}`;
+            
+            renderOverview();
+            renderTrends();
+            renderHealth();
+            renderPriority();
+            renderTechnical();
+            renderEngagement();
+            renderInsights();
+        }
+        
+        // Helper functions
+        function getPriorityClass(p) {
+            if (p >= 30) return 'priority-high';
+            if (p >= 20) return 'priority-medium';
+            return 'priority-low';
+        }
+        
+        function renderIssueList(issues, container, limit = 10) {
+            const el = document.getElementById(container);
+            if (!issues.length) {
+                el.innerHTML = '<div class="empty-state">No issues found</div>';
+                return;
+            }
+            el.innerHTML = '<div class="issue-list">' + issues.slice(0, limit).map(i => `
+                <div class="issue-item" onclick="window.open('${i.url}', '_blank')">
+                    <div class="issue-item-left">
+                        <span class="issue-number">#${i.number}</span>
+                        <span class="issue-title">${i.title}</span>
+                    </div>
+                    <div class="issue-meta">
+                        <span>📅 ${i.age_days}d</span>
+                        <span>💬 ${i.comment_count}</span>
+                        ${i.scores.priority ? `<span class="priority-badge ${getPriorityClass(i.scores.priority)}">${i.scores.priority.toFixed(1)}</span>` : ''}
+                    </div>
+                </div>
+            `).join('') + '</div>';
+        }
+        
+        function renderBarChart(items, container, colorFn) {
+            const max = Math.max(...items.map(i => i.count));
+            document.getElementById(container).innerHTML = '<div class="bar-chart">' + items.map(i => `
+                <div class="bar-row">
+                    <div class="bar-label">${i.label}</div>
+                    <div class="bar-container">
+                        <div class="bar" style="width:${(i.count/max)*100}%;background:${colorFn ? colorFn(i) : 'var(--accent)'}">
+                            ${i.count}
+                        </div>
+                    </div>
+                </div>
+            `).join('') + '</div>';
+        }
+        
+        // OVERVIEW
+        function renderOverview() {
+            const issues = data.issues;
+            const scored = issues.filter(i => i.scores.priority !== null);
+            const high = scored.filter(i => i.scores.priority >= 30);
+            const stale = issues.filter(i => i.days_since_update >= 30);
+            const unassigned = issues.filter(i => !i.is_assigned);
+            const bugs = issues.filter(i => i.analysis?.includes('bug') || i.label_names.some(l => l.toLowerCase().includes('bug')));
+            
+            document.getElementById('overview-stats').innerHTML = `
+                <div class="card"><h3>📋 Total</h3><div class="card-value">${issues.length}</div></div>
+                <div class="card"><h3>🔴 High Priority</h3><div class="card-value" style="color:var(--red)">${high.length}</div></div>
+                <div class="card"><h3>🐛 Bugs</h3><div class="card-value" style="color:var(--orange)">${bugs.length}</div></div>
+                <div class="card"><h3>⏰ Stale (30d+)</h3><div class="card-value" style="color:var(--yellow)">${stale.length}</div></div>
+                <div class="card"><h3>👋 Unassigned</h3><div class="card-value" style="color:var(--purple)">${unassigned.length}</div></div>
+                <div class="card"><h3>✅ Scored</h3><div class="card-value" style="color:var(--green)">${scored.length}</div></div>
+            `;
+            
+            // Critical issues
+            const critical = scored.filter(i => i.scores.importance >= 4 && i.scores.urgency >= 4)
+                .sort((a,b) => b.scores.priority - a.scores.priority);
+            renderIssueList(critical, 'critical-issues', 10);
+            
+            // Priority chart
+            renderBarChart([
+                { label: 'High (≥30)', count: high.length },
+                { label: 'Medium (20-29)', count: scored.filter(i => i.scores.priority >= 20 && i.scores.priority < 30).length },
+                { label: 'Low (<20)', count: scored.filter(i => i.scores.priority < 20).length },
+                { label: 'Unscored', count: issues.length - scored.length }
+            ], 'priority-chart', i => i.label.includes('High') ? 'var(--red)' : i.label.includes('Medium') ? 'var(--orange)' : i.label.includes('Low') ? 'var(--green)' : 'var(--text-muted)');
+            
+            // Age chart
+            renderBarChart([
+                { label: '< 7 days', count: issues.filter(i => i.age_days < 7).length },
+                { label: '7-30 days', count: issues.filter(i => i.age_days >= 7 && i.age_days < 30).length },
+                { label: '30-90 days', count: issues.filter(i => i.age_days >= 30 && i.age_days < 90).length },
+                { label: '90-180 days', count: issues.filter(i => i.age_days >= 90 && i.age_days < 180).length },
+                { label: '180+ days', count: issues.filter(i => i.age_days >= 180).length }
+            ], 'age-chart', i => {
+                if (i.label.includes('180+')) return 'var(--red)';
+                if (i.label.includes('90-180')) return 'var(--orange)';
+                if (i.label.includes('30-90')) return 'var(--yellow)';
+                return 'var(--green)';
+            });
+            
+            // Label chart
+            const labelCounts = {};
+            issues.forEach(i => i.label_names.forEach(l => labelCounts[l] = (labelCounts[l] || 0) + 1));
+            const topLabels = Object.entries(labelCounts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+            renderBarChart(topLabels.map(([label, count]) => ({ label, count })), 'label-chart');
+            
+            // Quick wins
+            const quickWins = scored.filter(i => i.scores.clarity >= 4 && i.scores.effort >= 4)
+                .sort((a,b) => b.scores.priority - a.scores.priority);
+            renderIssueList(quickWins, 'quick-wins', 8);
+        }
+        
+        // TRENDS
+        function renderTrends() {
+            const issues = data.issues;
+            
+            // Parse dates and group by week
+            const byWeek = {};
+            const byMonth = {};
+            const now = new Date();
+            
+            issues.forEach(i => {
+                const created = new Date(i.created_at);
+                const weekKey = getWeekKey(created);
+                const monthKey = created.toISOString().slice(0, 7); // YYYY-MM
+                
+                byWeek[weekKey] = byWeek[weekKey] || { created: 0, issues: [] };
+                byWeek[weekKey].created++;
+                byWeek[weekKey].issues.push(i);
+                
+                byMonth[monthKey] = byMonth[monthKey] || { created: 0, issues: [] };
+                byMonth[monthKey].created++;
+                byMonth[monthKey].issues.push(i);
+            });
+            
+            function getWeekKey(date) {
+                const d = new Date(date);
+                d.setHours(0, 0, 0, 0);
+                d.setDate(d.getDate() - d.getDay()); // Start of week
+                return d.toISOString().slice(0, 10);
+            }
+            
+            // Sort weeks
+            const weeks = Object.keys(byWeek).sort();
+            const recentWeeks = weeks.slice(-12); // Last 12 weeks
+            
+            // Stats
+            const last7Days = issues.filter(i => i.age_days < 7).length;
+            const last30Days = issues.filter(i => i.age_days < 30).length;
+            const avgPerWeek = Math.round(issues.length / Math.max(weeks.length, 1));
+            const withResponse = issues.filter(i => i.comment_count > 0).length;
+            
+            document.getElementById('trends-stats').innerHTML = `
+                <div class="card"><h3>📅 Last 7 Days</h3><div class="card-value">${last7Days}</div><div class="card-sub">new issues</div></div>
+                <div class="card"><h3>📅 Last 30 Days</h3><div class="card-value">${last30Days}</div><div class="card-sub">new issues</div></div>
+                <div class="card"><h3>📊 Avg/Week</h3><div class="card-value">${avgPerWeek}</div><div class="card-sub">issues created</div></div>
+                <div class="card"><h3>💬 Response Rate</h3><div class="card-value">${Math.round(withResponse/issues.length*100)}%</div><div class="card-sub">${withResponse} with comments</div></div>
+            `;
+            
+            // Created trend chart
+            renderLineChart('created-trend-chart', recentWeeks.map(w => ({
+                label: w.slice(5), // MM-DD
+                value: byWeek[w].created
+            })), 'var(--accent)', 'Issues Created');
+            
+            // Cumulative chart
+            let cumulative = 0;
+            const cumulativeData = recentWeeks.map(w => {
+                cumulative += byWeek[w].created;
+                return { label: w.slice(5), value: cumulative };
+            });
+            renderLineChart('cumulative-chart', cumulativeData, 'var(--purple)', 'Cumulative', true);
+            
+            // Response time chart (simulated based on comment presence and age)
+            const responseData = recentWeeks.map(w => {
+                const weekIssues = byWeek[w].issues;
+                const withComments = weekIssues.filter(i => i.comment_count > 0);
+                const avgResponseDays = withComments.length > 0 
+                    ? Math.round(withComments.reduce((s, i) => s + Math.min(i.days_since_update, i.age_days), 0) / withComments.length)
+                    : 0;
+                return { label: w.slice(5), value: avgResponseDays };
+            });
+            renderLineChart('response-time-chart', responseData, 'var(--orange)', 'Avg Days');
+            
+            // Age distribution over time (current snapshot)
+            const ageData = [
+                { label: '< 7d', value: issues.filter(i => i.age_days < 7).length },
+                { label: '7-30d', value: issues.filter(i => i.age_days >= 7 && i.age_days < 30).length },
+                { label: '30-90d', value: issues.filter(i => i.age_days >= 30 && i.age_days < 90).length },
+                { label: '90-180d', value: issues.filter(i => i.age_days >= 90 && i.age_days < 180).length },
+                { label: '180d+', value: issues.filter(i => i.age_days >= 180).length }
+            ];
+            renderLineChart('age-trend-chart', ageData, 'var(--yellow)', 'Issues');
+            
+            // SLA gauges
+            renderSLAGauge('sla-response', issues.filter(i => i.comment_count > 0 || i.age_days <= 7).length, issues.length, '7 days');
+            const triaged = issues.filter(i => i.label_names.length > 1 || !i.label_names.includes('triage'));
+            renderSLAGauge('sla-triage', triaged.length, issues.length, '14 days');
+            renderSLAGauge('sla-assignment', issues.filter(i => i.is_assigned).length, issues.length, '30 days');
+            
+            // Monthly breakdown
+            const months = Object.keys(byMonth).sort().slice(-6);
+            document.getElementById('monthly-breakdown').innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Issues Created</th>
+                            <th>With Comments</th>
+                            <th>High Priority</th>
+                            <th>Still Open</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${months.map(m => {
+                            const monthIssues = byMonth[m].issues;
+                            const withComments = monthIssues.filter(i => i.comment_count > 0).length;
+                            const highPri = monthIssues.filter(i => i.scores.priority >= 30).length;
+                            return `
+                                <tr>
+                                    <td><strong>${m}</strong></td>
+                                    <td>${monthIssues.length}</td>
+                                    <td>${withComments} (${Math.round(withComments/monthIssues.length*100)}%)</td>
+                                    <td style="color:var(--red)">${highPri}</td>
+                                    <td>${monthIssues.length}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            // Velocity stats
+            const thisWeek = issues.filter(i => i.age_days < 7).length;
+            const lastWeek = issues.filter(i => i.age_days >= 7 && i.age_days < 14).length;
+            const weekChange = thisWeek - lastWeek;
+            const thisMonth = issues.filter(i => i.age_days < 30).length;
+            const lastMonth = issues.filter(i => i.age_days >= 30 && i.age_days < 60).length;
+            const monthChange = thisMonth - lastMonth;
+            
+            document.getElementById('velocity-stats').innerHTML = `
+                <div class="card">
+                    <h3>📈 This Week vs Last</h3>
+                    <div class="card-value">${thisWeek}</div>
+                    <div class="card-sub">
+                        <span class="trend ${weekChange > 0 ? 'up' : weekChange < 0 ? 'down' : 'neutral'}">
+                            ${weekChange > 0 ? '↑' : weekChange < 0 ? '↓' : '→'} ${Math.abs(weekChange)} vs last week
+                        </span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📊 This Month vs Last</h3>
+                    <div class="card-value">${thisMonth}</div>
+                    <div class="card-sub">
+                        <span class="trend ${monthChange > 0 ? 'up' : monthChange < 0 ? 'down' : 'neutral'}">
+                            ${monthChange > 0 ? '↑' : monthChange < 0 ? '↓' : '→'} ${Math.abs(monthChange)} vs last month
+                        </span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>⏰ Avg Time Open</h3>
+                    <div class="card-value">${Math.round(issues.reduce((s, i) => s + i.age_days, 0) / issues.length)}d</div>
+                    <div class="card-sub">across all issues</div>
+                </div>
+                <div class="card">
+                    <h3>🔄 Stale Rate</h3>
+                    <div class="card-value">${Math.round(issues.filter(i => i.days_since_update >= 30).length / issues.length * 100)}%</div>
+                    <div class="card-sub">no activity 30+ days</div>
+                </div>
+            `;
+        }
+        
+        function renderLineChart(containerId, data, color, label, fill = false) {
+            const container = document.getElementById(containerId);
+            if (!container || !data.length) return;
+            
+            const width = container.offsetWidth || 400;
+            const height = container.offsetHeight || 200;
+            const padding = { top: 20, right: 20, bottom: 30, left: 40 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            const maxValue = Math.max(...data.map(d => d.value), 1);
+            const xStep = chartWidth / (data.length - 1 || 1);
+            
+            const points = data.map((d, i) => ({
+                x: padding.left + i * xStep,
+                y: padding.top + chartHeight - (d.value / maxValue) * chartHeight,
+                value: d.value,
+                label: d.label
+            }));
+            
+            const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+            const areaPath = linePath + ` L ${points[points.length-1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`;
+            
+            container.innerHTML = `
+                <svg class="chart-svg" viewBox="0 0 ${width} ${height}">
+                    <!-- Grid lines -->
+                    <g class="chart-grid">
+                        ${[0, 0.25, 0.5, 0.75, 1].map(pct => `
+                            <line x1="${padding.left}" y1="${padding.top + chartHeight * (1-pct)}" 
+                                  x2="${width - padding.right}" y2="${padding.top + chartHeight * (1-pct)}" />
+                        `).join('')}
+                    </g>
+                    
+                    <!-- Y axis labels -->
+                    <g class="chart-axis">
+                        <text x="${padding.left - 8}" y="${padding.top + 4}" text-anchor="end">${maxValue}</text>
+                        <text x="${padding.left - 8}" y="${padding.top + chartHeight}" text-anchor="end">0</text>
+                    </g>
+                    
+                    <!-- X axis labels -->
+                    <g class="chart-axis">
+                        ${points.filter((_, i) => i % Math.ceil(points.length / 6) === 0 || i === points.length - 1).map(p => `
+                            <text x="${p.x}" y="${height - 8}" text-anchor="middle">${p.label}</text>
+                        `).join('')}
+                    </g>
+                    
+                    <!-- Area fill -->
+                    ${fill ? `<path class="chart-area" d="${areaPath}" fill="${color}" />` : ''}
+                    
+                    <!-- Line -->
+                    <path class="chart-line" d="${linePath}" stroke="${color}" />
+                    
+                    <!-- Dots -->
+                    ${points.map(p => `
+                        <circle class="chart-dot" cx="${p.x}" cy="${p.y}" r="4" stroke="${color}" />
+                    `).join('')}
+                </svg>
+            `;
+        }
+        
+        function renderSLAGauge(containerId, met, total, target) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const pct = total > 0 ? Math.round(met / total * 100) : 0;
+            const circumference = 2 * Math.PI * 54; // radius 54
+            const offset = circumference - (pct / 100) * circumference;
+            const color = pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--orange)' : 'var(--red)';
+            
+            container.innerHTML = `
+                <div class="sla-gauge">
+                    <div class="sla-circle">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="bg" cx="60" cy="60" r="54" />
+                            <circle class="progress" cx="60" cy="60" r="54" 
+                                    stroke="${color}"
+                                    stroke-dasharray="${circumference}"
+                                    stroke-dashoffset="${offset}" />
+                        </svg>
+                        <div class="sla-value">
+                            <div class="pct" style="color:${color}">${pct}%</div>
+                            <div class="label">met</div>
+                        </div>
+                    </div>
+                    <div class="sla-details">
+                        ${met} of ${total} issues<br>
+                        Target: ${target}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // HEALTH
+        function renderHealth() {
+            const issues = data.issues;
+            const stale30 = issues.filter(i => i.days_since_update >= 30);
+            const stale90 = issues.filter(i => i.days_since_update >= 90);
+            const hasLabels = issues.filter(i => i.label_names.length > 0);
+            const unassigned = issues.filter(i => !i.is_assigned);
+            const avgAge = Math.round(issues.reduce((s, i) => s + i.age_days, 0) / issues.length);
+            
+            document.getElementById('health-stats').innerHTML = `
+                <div class="card"><h3>📅 Avg Age</h3><div class="card-value">${avgAge}d</div></div>
+                <div class="card"><h3>⏰ Stale (30d+)</h3><div class="card-value" style="color:var(--orange)">${stale30.length}</div><div class="card-sub">${Math.round(stale30.length/issues.length*100)}% of total</div></div>
+                <div class="card"><h3>🏷️ Labeled</h3><div class="card-value" style="color:var(--green)">${hasLabels.length}</div><div class="card-sub">${Math.round(hasLabels.length/issues.length*100)}% coverage</div></div>
+                <div class="card"><h3>👋 Unassigned</h3><div class="card-value" style="color:var(--purple)">${unassigned.length}</div><div class="card-sub">${Math.round(unassigned.length/issues.length*100)}% of total</div></div>
+            `;
+            
+            // Age breakdown
+            document.getElementById('age-breakdown').innerHTML = `
+                <div class="stat-row"><span class="stat-label">Fresh (< 7 days)</span><span class="stat-value" style="color:var(--green)">${issues.filter(i => i.age_days < 7).length}</span></div>
+                <div class="stat-row"><span class="stat-label">Recent (7-30 days)</span><span class="stat-value">${issues.filter(i => i.age_days >= 7 && i.age_days < 30).length}</span></div>
+                <div class="stat-row"><span class="stat-label">Aging (30-90 days)</span><span class="stat-value" style="color:var(--yellow)">${issues.filter(i => i.age_days >= 30 && i.age_days < 90).length}</span></div>
+                <div class="stat-row"><span class="stat-label">Old (90-180 days)</span><span class="stat-value" style="color:var(--orange)">${issues.filter(i => i.age_days >= 90 && i.age_days < 180).length}</span></div>
+                <div class="stat-row"><span class="stat-label">Ancient (180+ days)</span><span class="stat-value" style="color:var(--red)">${issues.filter(i => i.age_days >= 180).length}</span></div>
+            `;
+            
+            // Label quality
+            const noLabels = issues.filter(i => i.label_names.length === 0);
+            const triageOnly = issues.filter(i => i.label_names.length === 1 && i.label_names[0].toLowerCase() === 'triage');
+            document.getElementById('label-quality').innerHTML = `
+                <div class="stat-row"><span class="stat-label">No labels</span><span class="stat-value" style="color:var(--red)">${noLabels.length}</span></div>
+                <div class="stat-row"><span class="stat-label">Only 'triage' label</span><span class="stat-value" style="color:var(--orange)">${triageOnly.length}</span></div>
+                <div class="stat-row"><span class="stat-label">Properly labeled</span><span class="stat-value" style="color:var(--green)">${issues.length - noLabels.length - triageOnly.length}</span></div>
+            `;
+            
+            // Stale issues
+            const staleIssues = issues.filter(i => i.days_since_update >= 30).sort((a,b) => b.days_since_update - a.days_since_update);
+            renderIssueList(staleIssues, 'stale-issues', 15);
+            
+            // Unassigned
+            const unassignedSorted = unassigned.sort((a,b) => (b.scores.priority || 0) - (a.scores.priority || 0));
+            renderIssueList(unassignedSorted, 'unassigned-issues', 15);
+        }
+        
+        // PRIORITY
+        function renderPriority() {
+            const scored = data.issues.filter(i => i.scores.priority !== null);
+            const high = scored.filter(i => i.scores.priority >= 30);
+            const delegatable = scored.filter(i => i.scores.delegation >= 4);
+            const enterprise = data.issues.filter(i => i.analysis?.includes('enterprise'));
+            
+            document.getElementById('priority-stats').innerHTML = `
+                <div class="card"><h3>🔴 High Priority</h3><div class="card-value" style="color:var(--red)">${high.length}</div></div>
+                <div class="card"><h3>🤖 Delegatable</h3><div class="card-value" style="color:var(--purple)">${delegatable.length}</div></div>
+                <div class="card"><h3>🏢 Enterprise</h3><div class="card-value" style="color:var(--accent)">${enterprise.length}</div></div>
+            `;
+            
+            // Top priority
+            const topPriority = scored.sort((a,b) => b.scores.priority - a.scores.priority);
+            renderIssueList(topPriority, 'top-priority', 20);
+            
+            // Delegatable
+            const delegatableSorted = delegatable.sort((a,b) => b.scores.priority - a.scores.priority);
+            renderIssueList(delegatableSorted, 'delegatable', 15);
+            
+            // Enterprise
+            renderIssueList(enterprise.sort((a,b) => (b.scores.priority || 0) - (a.scores.priority || 0)), 'enterprise-issues', 15);
+        }
+        
+        // TECHNICAL
+        function renderTechnical() {
+            const issues = data.issues;
+            const security = issues.filter(i => {
+                const body = (i.body || '').toLowerCase();
+                const title = i.title.toLowerCase();
+                return body.includes('security') || body.includes('vulnerability') || 
+                       title.includes('security') || title.includes('crash') || 
+                       i.analysis?.includes('CRITICAL');
+            });
+            const hasRepro = issues.filter(i => i.analysis?.includes('has-repro'));
+            const needsInfo = issues.filter(i => i.label_names.some(l => l.toLowerCase().includes('more-info')));
+            const lowClarity = issues.filter(i => i.scores.clarity !== null && i.scores.clarity <= 2);
+            
+            document.getElementById('tech-stats').innerHTML = `
+                <div class="card"><h3>🔒 Security/Stability</h3><div class="card-value" style="color:var(--red)">${security.length}</div></div>
+                <div class="card"><h3>📝 Has Repro Steps</h3><div class="card-value" style="color:var(--green)">${hasRepro.length}</div></div>
+                <div class="card"><h3>❓ Needs Info</h3><div class="card-value" style="color:var(--orange)">${needsInfo.length + lowClarity.length}</div></div>
+            `;
+            
+            renderIssueList(security.sort((a,b) => (b.scores.priority || 0) - (a.scores.priority || 0)), 'security-issues', 15);
+            renderIssueList(hasRepro.sort((a,b) => (b.scores.priority || 0) - (a.scores.priority || 0)), 'has-repro', 15);
+            renderIssueList([...needsInfo, ...lowClarity].sort((a,b) => (b.scores.priority || 0) - (a.scores.priority || 0)), 'needs-info', 15);
+            
+            // Find potential duplicates by similar titles
+            const titleWords = {};
+            issues.forEach(i => {
+                const words = i.title.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+                words.forEach(w => {
+                    if (!titleWords[w]) titleWords[w] = [];
+                    titleWords[w].push(i);
+                });
+            });
+            const clusters = Object.entries(titleWords).filter(([w, list]) => list.length >= 3 && !['github', 'copilot', 'issue', 'error'].includes(w)).slice(0, 5);
+            document.getElementById('duplicates').innerHTML = clusters.length ? clusters.map(([word, list]) => `
+                <div style="margin-bottom:16px">
+                    <strong>${list.length} issues mention "${word}":</strong>
+                    <div class="issue-list" style="margin-top:8px">
+                        ${list.slice(0, 5).map(i => `
+                            <div class="issue-item" onclick="window.open('${i.url}', '_blank')">
+                                <span class="issue-number">#${i.number}</span>
+                                <span class="issue-title">${i.title}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('') : '<div class="empty-state">No obvious duplicates detected</div>';
+        }
+        
+        // ENGAGEMENT
+        function renderEngagement() {
+            const issues = data.issues;
+            const totalComments = issues.reduce((s, i) => s + i.comment_count, 0);
+            const withComments = issues.filter(i => i.comment_count > 0);
+            const avgComments = (totalComments / issues.length).toFixed(1);
+            
+            // Top contributors
+            const userCounts = {};
+            issues.forEach(i => userCounts[i.user] = (userCounts[i.user] || 0) + 1);
+            const topUsers = Object.entries(userCounts).sort((a,b) => b[1] - a[1]).slice(0, 10);
+            
+            document.getElementById('engagement-stats').innerHTML = `
+                <div class="card"><h3>💬 Total Comments</h3><div class="card-value">${totalComments}</div></div>
+                <div class="card"><h3>📊 Avg Comments</h3><div class="card-value">${avgComments}</div></div>
+                <div class="card"><h3>✉️ With Responses</h3><div class="card-value">${withComments.length}</div><div class="card-sub">${Math.round(withComments.length/issues.length*100)}%</div></div>
+                <div class="card"><h3>👤 Unique Authors</h3><div class="card-value">${Object.keys(userCounts).length}</div></div>
+            `;
+            
+            // Most commented
+            const mostComments = [...issues].sort((a,b) => b.comment_count - a.comment_count);
+            renderIssueList(mostComments, 'most-comments', 15);
+            
+            // Contributors
+            renderBarChart(topUsers.map(([user, count]) => ({ label: user, count })), 'contributors');
+            
+            // Type chart
+            const bugs = issues.filter(i => i.analysis?.includes('bug')).length;
+            const features = issues.filter(i => i.analysis?.includes('feature')).length;
+            const other = issues.length - bugs - features;
+            renderBarChart([
+                { label: 'Bugs', count: bugs },
+                { label: 'Features', count: features },
+                { label: 'Other', count: other }
+            ], 'type-chart', i => i.label === 'Bugs' ? 'var(--red)' : i.label === 'Features' ? 'var(--green)' : 'var(--text-muted)');
+            
+            // Comment distribution
+            renderBarChart([
+                { label: '0 comments', count: issues.filter(i => i.comment_count === 0).length },
+                { label: '1-3 comments', count: issues.filter(i => i.comment_count >= 1 && i.comment_count <= 3).length },
+                { label: '4-10 comments', count: issues.filter(i => i.comment_count >= 4 && i.comment_count <= 10).length },
+                { label: '10+ comments', count: issues.filter(i => i.comment_count > 10).length }
+            ], 'comment-chart');
+        }
+        
+        // INSIGHTS
+        function renderInsights() {
+            const issues = data.issues;
+            const scored = issues.filter(i => i.scores.priority !== null);
+            const stale = issues.filter(i => i.days_since_update >= 30);
+            const highPriority = scored.filter(i => i.scores.priority >= 30);
+            const unassigned = issues.filter(i => !i.is_assigned);
+            const noLabels = issues.filter(i => i.label_names.length === 0);
+            const enterprise = issues.filter(i => i.analysis?.includes('enterprise'));
+            const auth = issues.filter(i => i.analysis?.includes('auth'));
+            
+            const insights = [];
+            
+            // Generate insights
+            if (stale.length > issues.length * 0.3) {
+                insights.push({
+                    type: 'danger',
+                    title: `${Math.round(stale.length/issues.length*100)}% of issues are stale`,
+                    body: `${stale.length} issues haven't been updated in 30+ days. Consider a triage sprint to close or update these.`
+                });
+            }
+            
+            if (highPriority.length > 50) {
+                insights.push({
+                    type: 'warning',
+                    title: `${highPriority.length} high-priority issues`,
+                    body: 'Large backlog of high-priority work. Consider re-evaluating priority criteria or allocating more resources.'
+                });
+            }
+            
+            if (unassigned.length > issues.length * 0.8) {
+                insights.push({
+                    type: 'warning',
+                    title: 'Most issues are unassigned',
+                    body: `${unassigned.length} issues (${Math.round(unassigned.length/issues.length*100)}%) have no assignee. Consider establishing ownership.`
+                });
+            }
+            
+            if (noLabels.length > 20) {
+                insights.push({
+                    type: 'warning',
+                    title: `${noLabels.length} issues have no labels`,
+                    body: 'Unlabeled issues are hard to triage. Consider adding automated labeling.'
+                });
+            }
+            
+            if (enterprise.length > 0) {
+                insights.push({
+                    type: 'danger',
+                    title: `${enterprise.length} enterprise customer issues`,
+                    body: 'Enterprise issues often have higher business impact. Prioritize these for review.'
+                });
+            }
+            
+            if (auth.length > 10) {
+                insights.push({
+                    type: 'danger',
+                    title: `${auth.length} authentication-related issues`,
+                    body: 'Auth issues block user access entirely. These should be top priority.'
+                });
+            }
+            
+            const delegatable = scored.filter(i => i.scores.delegation >= 4);
+            if (delegatable.length > 20) {
+                insights.push({
+                    type: 'success',
+                    title: `${delegatable.length} issues suitable for delegation`,
+                    body: 'Good candidates for AI assistance or junior developers. Consider automating these.'
+                });
+            }
+            
+            document.getElementById('insights').innerHTML = insights.length ? insights.map(i => `
+                <div class="insight ${i.type}">
+                    <div class="insight-title">${i.title}</div>
+                    <div class="insight-body">${i.body}</div>
+                </div>
+            `).join('') : '<div class="empty-state">No major insights detected</div>';
+            
+            // Actions
+            document.getElementById('actions').innerHTML = `
+                <div class="card">
+                    <h3>🔥 Immediate</h3>
+                    <ul style="color:var(--text-muted);padding-left:20px;margin-top:12px">
+                        <li>Review ${auth.length} auth issues</li>
+                        <li>Triage ${enterprise.length} enterprise issues</li>
+                        <li>Address top 10 priority items</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>📅 This Week</h3>
+                    <ul style="color:var(--text-muted);padding-left:20px;margin-top:12px">
+                        <li>Label ${noLabels.length} unlabeled issues</li>
+                        <li>Close stale/duplicate issues</li>
+                        <li>Assign owners to high-priority</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>📆 This Month</h3>
+                    <ul style="color:var(--text-muted);padding-left:20px;margin-top:12px">
+                        <li>Review all 180+ day old issues</li>
+                        <li>Establish SLAs for issue types</li>
+                        <li>Set up automated triage</li>
+                    </ul>
+                </div>
+            `;
+            
+            // Clusters
+            const keywords = {};
+            const commonWords = ['the', 'and', 'for', 'with', 'this', 'that', 'from', 'have', 'not', 'are', 'but', 'what', 'when', 'github', 'copilot', 'cli', 'issue', 'error', 'bug', 'feature'];
+            issues.forEach(i => {
+                const words = i.title.toLowerCase().split(/\s+/).filter(w => w.length > 3 && !commonWords.includes(w));
+                words.forEach(w => keywords[w] = (keywords[w] || 0) + 1);
+            });
+            const topKeywords = Object.entries(keywords).filter(([w, c]) => c >= 5).sort((a,b) => b[1] - a[1]).slice(0, 15);
+            document.getElementById('clusters').innerHTML = `
+                <div class="label-cloud">
+                    ${topKeywords.map(([word, count]) => `
+                        <span class="label-tag" style="background:var(--bg-tertiary);color:var(--text)">${word} (${count})</span>
+                    `).join('')}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

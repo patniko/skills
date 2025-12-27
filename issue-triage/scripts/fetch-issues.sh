@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-LIMIT=50
+LIMIT=""  # Empty means fetch all
 REPO=""
 OUTPUT="triage-data.json"
 VIEW=false
@@ -41,17 +41,52 @@ done
 # Determine repo name for metadata
 if [[ -n "$REPO" ]]; then
     REPO_NAME="$REPO"
-    API_URL="https://api.github.com/repos/$REPO/issues?state=open&per_page=$LIMIT"
 else
     # Try to get from git remote
     REPO_NAME=$(git remote get-url origin 2>/dev/null | sed 's/.*github.com[:/]\(.*\)\.git/\1/' | sed 's/.*github.com[:/]\(.*\)/\1/' || echo "unknown")
-    API_URL="https://api.github.com/repos/$REPO_NAME/issues?state=open&per_page=$LIMIT"
 fi
 
 echo "Fetching issues from $REPO_NAME..." >&2
 
-# Fetch and transform
-curl -s "$API_URL" | jq --arg repo "$REPO_NAME" --arg generated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '
+# Fetch all pages of issues
+TMPFILE=$(mktemp)
+PAGE=1
+PER_PAGE=100
+TOTAL=0
+
+while true; do
+    API_URL="https://api.github.com/repos/$REPO_NAME/issues?state=open&per_page=$PER_PAGE&page=$PAGE"
+    RESPONSE=$(curl -s "$API_URL")
+    
+    # Check if we got any issues
+    COUNT=$(echo "$RESPONSE" | jq 'if type == "array" then [.[] | select(.pull_request == null)] | length else 0 end')
+    
+    if [[ "$COUNT" -eq 0 ]]; then
+        break
+    fi
+    
+    # Append to temp file (just the array contents)
+    echo "$RESPONSE" | jq -c '.[] | select(.pull_request == null)' >> "$TMPFILE"
+    TOTAL=$((TOTAL + COUNT))
+    
+    echo "  Fetched page $PAGE ($TOTAL issues so far)..." >&2
+    
+    # Check if we've hit the limit
+    if [[ -n "$LIMIT" && "$TOTAL" -ge "$LIMIT" ]]; then
+        break
+    fi
+    
+    # Check if this was a partial page (no more results)
+    RAW_COUNT=$(echo "$RESPONSE" | jq 'length')
+    if [[ "$RAW_COUNT" -lt "$PER_PAGE" ]]; then
+        break
+    fi
+    
+    PAGE=$((PAGE + 1))
+done
+
+# Transform collected issues into final format
+cat "$TMPFILE" | jq -s --arg repo "$REPO_NAME" --arg generated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '
 def days_ago:
     ((now - (. | fromdateiso8601)) / 86400) | floor;
 
@@ -90,6 +125,8 @@ def days_ago:
         analysis: null
     }]
 }' > "$OUTPUT"
+
+rm -f "$TMPFILE"
 
 echo "Saved $(jq '.issues | length' "$OUTPUT") issues to $OUTPUT" >&2
 
