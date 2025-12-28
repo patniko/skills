@@ -26,10 +26,8 @@ Fetch GitHub issues, apply intelligent analysis, and visualize priorities.
 # 1. Fetch issues (saves to triage-data.json)
 ./scripts/fetch-issues.sh owner/repo
 
-# 2. Open the interactive viewer
-./scripts/fetch-issues.sh owner/repo --view
-
-# Or open viewer.html directly in your browser
+# 2. Launch dashboard in browser
+./scripts/serve.sh
 ```
 
 ## How This Skill Works
@@ -150,25 +148,19 @@ Max score: 40 | High priority: ≥30 | Medium: 20-29 | Low: <20
 
 ## Workflow
 
-### Option 1: LLM-Driven Analysis
+### Standard Workflow
+
+1. Run `./scripts/fetch-issues.sh owner/repo` to fetch issues
+2. Analyze the top issues and provide a summary with priorities
+3. Run `./scripts/serve.sh` to launch the dashboard in the browser
+4. The dashboard auto-loads `triage-data.json` and displays interactive visualizations
+
+### Manual Exploration
 
 1. Run `./scripts/fetch-issues.sh owner/repo`
-2. Read `triage-data.json` and analyze each issue
-3. Update the `scores` and `analysis` fields for each issue
-4. Save the updated JSON
-5. Open `viewer.html` to explore results
-
-### Option 2: Interactive Viewer
-
-1. Run `./scripts/fetch-issues.sh owner/repo --view`
-2. Use the web viewer to manually score issues
-3. Export the scored data when done
-
-### Option 3: Hybrid
-
-1. Fetch data and have the LLM score the top 20 issues
-2. Open viewer to review, adjust, and explore
-3. Use viewer's export to save your refined analysis
+2. Run `./scripts/serve.sh` (opens http://localhost:8080/dashboard.html)
+3. Use the dashboard to explore, filter, and drill into issues
+4. Press Ctrl+C in terminal to stop the server when done
 
 ## Viewer Features
 
@@ -206,11 +198,13 @@ Or provide a summary report alongside the JSON updates.
 
 ```
 issue-triage/
-├── SKILL.md           # This file
-├── viewer.html        # Interactive web viewer
+├── SKILL.md             # This file
+├── dashboard.html       # Full analytics dashboard
+├── viewer.html          # Simple issue viewer
 ├── scripts/
-│   └── fetch-issues.sh  # Data fetching script
-└── triage-data.json   # Generated data (git-ignored)
+│   ├── fetch-issues.sh  # Data fetching script
+│   └── serve.sh         # Local server + browser launch
+└── triage-data.json     # Generated data (git-ignored)
 ```
 
 ## Notes
