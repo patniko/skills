@@ -39,7 +39,7 @@ if [[ -n "$HIGH_PRIORITY" ]]; then
     read -p "Add 'priority-high' label to these? (y/n): " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "$HIGH_PRIORITY" | while read issue; do
+        echo "$HIGH_PRIORITY" | while read -r issue; do
             gh issue edit "$issue" --add-label "priority-high" --repo "$REPO" 2>/dev/null && echo "✓ #$issue"
         done
     fi
@@ -57,7 +57,7 @@ if [[ -n "$AI_READY" ]]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Try to create label if it doesn't exist
         gh label create "good-for-ai" --description "Good candidate for AI coding agent" --color "00ff00" --repo "$REPO" 2>/dev/null || true
-        echo "$AI_READY" | while read issue; do
+        echo "$AI_READY" | while read -r issue; do
             gh issue edit "$issue" --add-label "good-for-ai" --repo "$REPO" 2>/dev/null && echo "✓ #$issue"
         done
     fi
@@ -75,7 +75,7 @@ if [[ -n "$QUICK_WINS" ]]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Try to create label if it doesn't exist
         gh label create "quick-win" --description "Easy to implement" --color "00ff00" --repo "$REPO" 2>/dev/null || true
-        echo "$QUICK_WINS" | while read issue; do
+        echo "$QUICK_WINS" | while read -r issue; do
             gh issue edit "$issue" --add-label "quick-win" --repo "$REPO" 2>/dev/null && echo "✓ #$issue"
         done
     fi
@@ -93,7 +93,7 @@ if [[ -n "$UNCLEAR" ]]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Try to create label if it doesn't exist
         gh label create "needs-info" --description "More information needed" --color "d4c5f9" --repo "$REPO" 2>/dev/null || true
-        echo "$UNCLEAR" | while read issue; do
+        echo "$UNCLEAR" | while read -r issue; do
             gh issue edit "$issue" --add-label "needs-info" --repo "$REPO" 2>/dev/null && echo "✓ #$issue"
         done
     fi
@@ -115,7 +115,7 @@ if [[ -n "$STALE" ]]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Try to create label if it doesn't exist
         gh label create "stale" --description "Old issue with low priority" --color "eeeeee" --repo "$REPO" 2>/dev/null || true
-        echo "$STALE" | while read issue; do
+        echo "$STALE" | while read -r issue; do
             gh issue edit "$issue" --add-label "stale" --repo "$REPO" 2>/dev/null && echo "✓ #$issue"
         done
     fi
