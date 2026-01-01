@@ -21,6 +21,15 @@ Each skill is a directory containing:
 | [issue-responder](./issue-responder/) | Add comments to GitHub issues to request info or provide updates |
 | [issue-labeler](./issue-labeler/) | Add, remove, or update labels on GitHub issues for organization |
 
+### Issue Management Workflow
+
+These skills work together to help you manage and reduce open issues. See [WORKFLOW.md](./WORKFLOW.md) for a complete guide on using these skills together, including:
+
+- Complete triage-to-closure workflow
+- Common patterns for cleanup sessions
+- Automation examples
+- Tips for effective issue management
+
 ## Adding a New Skill
 
 ### 1. Create the Directory Structure
