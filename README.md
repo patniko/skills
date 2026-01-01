@@ -17,6 +17,9 @@ Each skill is a directory containing:
 | Skill | Description |
 |-------|-------------|
 | [issue-triage](./issue-triage/) | Fetch and organize GitHub issues to identify what to work on next |
+| [issue-closer](./issue-closer/) | Close GitHub issues with appropriate reasoning to reduce open issue count |
+| [issue-responder](./issue-responder/) | Add comments to GitHub issues to request info or provide updates |
+| [issue-labeler](./issue-labeler/) | Add, remove, or update labels on GitHub issues for organization |
 
 ## Adding a New Skill
 
