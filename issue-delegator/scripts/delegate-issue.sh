@@ -77,7 +77,7 @@ if [[ "$DELEGATE_TO" == "copilot" ]]; then
     # Delegation to Copilot Coding Agent
     # Add ai-ready label and create a comment that Copilot can act on
     
-    COMMENT="@github-copilot Please work on this issue.
+    COMMENT="@copilot Please work on this issue.
 
 ## Instructions
 Review the issue description and implement the requested changes.

@@ -26,6 +26,7 @@ LABELS='[
     {"name": "ai-ready", "color": "0052cc", "description": "Ready for AI coding agent"},
     {"name": "ai-assisted", "color": "006b75", "description": "AI can help but needs human oversight"},
     {"name": "needs-human", "color": "d73a4a", "description": "Requires human judgment/decisions"},
+    {"name": "good first issue", "color": "7057ff", "description": "Good for newcomers"},
     {"name": "needs-triage", "color": "ededed", "description": "Needs initial triage"},
     {"name": "stale", "color": "ffffff", "description": "No recent activity"},
     {"name": "duplicate", "color": "cfd3d7", "description": "Duplicate of another issue"},
@@ -76,10 +77,6 @@ echo ""
 
 # Get existing labels
 EXISTING=$(gh label list --repo "$REPO" --json name --jq '.[].name' 2>/dev/null || echo "")
-
-CREATED=0
-UPDATED=0
-SKIPPED=0
 
 # Process each label
 echo "$LABELS" | jq -c '.[]' | while read -r label; do
