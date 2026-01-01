@@ -17,6 +17,9 @@ Each skill is a directory containing:
 | Skill | Description |
 |-------|-------------|
 | [issue-triage](./issue-triage/) | Fetch and organize GitHub issues to identify what to work on next |
+| [issue-closer](./issue-closer/) | Close GitHub issues with appropriate reasons (stale, duplicate, invalid, wontfix) |
+| [issue-labeler](./issue-labeler/) | Apply labels to issues based on triage scores (priority, effort, AI-readiness) |
+| [issue-delegator](./issue-delegator/) | Delegate issues to AI coding agents or human contributors |
 
 ## Adding a New Skill
 
