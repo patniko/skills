@@ -1,0 +1,14 @@
+{
+  "name": "scorecard-update",
+  "version": "1.0.0",
+  "description": "Capture Azure dashboards and update Google Sheets scorecard",
+  "main": "scripts/workflow.js",
+  "scripts": {
+    "start": "node scripts/workflow.js",
+    "connect": "node scripts/connect.js",
+    "capture": "node scripts/workflow.js"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

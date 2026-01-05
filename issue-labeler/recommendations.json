@@ -1,0 +1,1003 @@
+{
+  "metadata": {
+    "repository": "github/copilot-cli",
+    "generated": "2026-01-05T17:48:37Z",
+    "total_issues": 46
+  },
+  "available_labels": [
+    {
+      "color": "FBCA04",
+      "description": "How We Work trending state: at risk",
+      "name": "at risk"
+    },
+    {
+      "color": "80ccff",
+      "description": "How We Work work item type: 2 week or less long effort.",
+      "name": "batch"
+    },
+    {
+      "color": "d73a4a",
+      "description": "Something isn't working",
+      "name": "bug"
+    },
+    {
+      "color": "0075ca",
+      "description": "Improvements or additions to documentation",
+      "name": "documentation"
+    },
+    {
+      "color": "7847D6",
+      "description": "How We Work trending state: done",
+      "name": "done"
+    },
+    {
+      "color": "cfd3d7",
+      "description": "This issue or pull request already exists",
+      "name": "duplicate"
+    },
+    {
+      "color": "a2eeef",
+      "description": "New feature or request",
+      "name": "enhancement"
+    },
+    {
+      "color": "0969da",
+      "description": "How We Work work item type: 4-6 week long effort.",
+      "name": "epic"
+    },
+    {
+      "color": "7057ff",
+      "description": "Good for newcomers",
+      "name": "good first issue"
+    },
+    {
+      "color": "008672",
+      "description": "Extra attention is needed",
+      "name": "help wanted"
+    },
+    {
+      "color": "D93F0B",
+      "description": "How We Work trending state: high risk",
+      "name": "high risk"
+    },
+    {
+      "color": "eeeeee",
+      "description": "How We Work trending state: inactive",
+      "name": "inactive"
+    },
+    {
+      "color": "d93f0b",
+      "description": "Work identified as a repair item from an incident",
+      "name": "incident-repair"
+    },
+    {
+      "color": "B60205",
+      "description": "High priority incident repair work",
+      "name": "incident-repair-high"
+    },
+    {
+      "color": "458136",
+      "description": "Low priority incident repair work",
+      "name": "incident-repair-low"
+    },
+    {
+      "color": "A87625",
+      "description": "Medium priority incident repair work",
+      "name": "incident-repair-medium"
+    },
+    {
+      "color": "0a3069",
+      "description": "How We Work work item type: the largest grouping of work",
+      "name": "initiative"
+    },
+    {
+      "color": "e4e669",
+      "description": "This doesn't seem right",
+      "name": "invalid"
+    },
+    {
+      "color": "FBCA04",
+      "description": "",
+      "name": "no target date"
+    },
+    {
+      "color": "0E8A16",
+      "description": "How We Work trending state: on track",
+      "name": "on track"
+    },
+    {
+      "color": "FBCA04",
+      "description": "",
+      "name": "past target date"
+    },
+    {
+      "color": "d876e3",
+      "description": "Further information is requested",
+      "name": "question"
+    },
+    {
+      "color": "DCFFE4",
+      "description": "Request from support",
+      "name": "support-escalation"
+    },
+    {
+      "color": "DD1FAE",
+      "description": "High urgency, continuous impact to customer business, no known workaround",
+      "name": "support-sev1"
+    },
+    {
+      "color": "2452A0",
+      "description": "High urgency, low or transient impact, no known workaround",
+      "name": "support-sev2"
+    },
+    {
+      "color": "EA9B85",
+      "description": "Low urgency, low impact, transient, known workaround available",
+      "name": "support-sev3"
+    },
+    {
+      "color": "ddf4ff",
+      "description": "How We Work work item type: 1 day or less long effort.",
+      "name": "task"
+    },
+    {
+      "color": "ffffff",
+      "description": "This will not be worked on",
+      "name": "wontfix"
+    },
+    {
+      "color": "000000",
+      "description": "An ignored repair item. Search Incident Repair in The Hub for more info.",
+      "name": "incident-repair-ignore"
+    },
+    {
+      "color": "006b75",
+      "description": "This issue has been added to our internal issue tracker",
+      "name": "triaged"
+    },
+    {
+      "color": "f45f9e",
+      "description": "We're investigating this report",
+      "name": "investigating"
+    },
+    {
+      "color": "F630D8",
+      "description": "",
+      "name": "triage"
+    },
+    {
+      "color": "38BCE4",
+      "description": "",
+      "name": "more-info-needed"
+    },
+    {
+      "color": "b5d505",
+      "description": "",
+      "name": "unable-to-reproduce"
+    },
+    {
+      "color": "08A0DB",
+      "description": "Relates to an accessibility concern.",
+      "name": "accessibility"
+    },
+    {
+      "color": "d93f0b",
+      "description": "Bug that affects many users in a significant way and prevents core functions.",
+      "name": "priority-1"
+    },
+    {
+      "color": "f9d0c4",
+      "description": "Bug that affects more than a few users in a meaningful way but doesn't prevent core functions",
+      "name": "priority-2"
+    },
+    {
+      "color": "fef2c0",
+      "description": "Bugs that affect small number of users and/or relatively cosmetic in nature",
+      "name": "priority-3"
+    },
+    {
+      "color": "aaaaaa",
+      "description": "",
+      "name": "2025 EOY"
+    }
+  ],
+  "recommendations": [
+    {
+      "number": 890,
+      "title": "Feature Request: Folder-Pinned Sessions",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nIt would be helpful to have the ability to pin a Copilot CLI session to a specific folder/repository, so that when I    run gh copilot from that directory again, it automatically resumes the pinned session rather than starting fresh.\n\n### Proposed solution\n\nCurrent behavior:\n\n     - gh copilot starts a new session\n     - gh copilot --resume shows a list of recent sessions to choose from\n\nProblem with current behavoir:\n\nWhen working across ",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "tomorgan",
+      "created_at": "2026-01-05T14:24:23Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Feature request for folder-pinned sessions. Well-described enhancement.",
+      "approved": null
+    },
+    {
+      "number": 889,
+      "title": "Problem of task completion by artificial intelligence",
+      "body_preview": "### Describe the bug\n\nThe Copilot artificial intelligence is having difficulty continuing a specific task for a certain period of time. Instead of continuing, it suddenly freezes. The AI ​​says it will perform a task, but it doesn't, which is very strange, and it takes a long time to do so even after much persistence. I ask if the AI ​​has any questions, but it says no, and it freezes anyway, even when it says: \"I'll solve this now!\". And it does nothing, it just stops. My operating system is Li",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "JosueAmaral15",
+      "created_at": "2026-01-05T12:36:22Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "more-info-needed"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Vague bug about AI freezing. No repro steps, unclear behavior.",
+      "approved": null
+    },
+    {
+      "number": 888,
+      "title": "new \"compaction\" is completely broken",
+      "body_preview": "### Describe the bug\n\nIt does not trigger at 95%, have seen it at 100%. \nIt takes AGES to run, and when it finally finishes it has completely \"forgotten\" what the original request is so stops processing and asks what it should be doing... \n\nparaphrasing:\n\n```\n\"please implement authentication\"\n... works for 10 minutes...\n\n...compacting..\n\n\"Can you clarify what it was you wanted to implement\"\n```\n\n### Affected version\n\n0.0.374 Commit: 9fecd24\n\n### Steps to reproduce the behavior\n\n1. setup a comple",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "dogmatic69",
+      "created_at": "2026-01-05T09:46:10Z",
+      "comment_count": 1,
+      "recommended_labels": [
+        "bug",
+        "priority-1"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Critical bug: compaction feature completely broken, loses context. Affects core functionality.",
+      "approved": null
+    },
+    {
+      "number": 884,
+      "title": "Constantly trying to read /workspace/*",
+      "body_preview": "### Describe the bug\n\nThis started in the last few days, it is trying to read /workspace and I am on a local pc. I have no reference to /workspace, never have. Don't use workspaces. Seems like something bleeding over. It's annoying having to reject and restart or confirm and watch it fail for minutes trying to find the code when it should just read cwd as it always had done.\n\n### Affected version\n\n0.0.374 Commit: 9fecd24\n\n### Steps to reproduce the behavior\n\n1. ask for changes\n2. tried to read /",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "dogmatic69",
+      "created_at": "2026-01-04T23:01:52Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Regression: agent assumes wrong /workspace path. Affects local development workflow.",
+      "approved": null
+    },
+    {
+      "number": 879,
+      "title": "Sequential approval and execution instead of batch approval queue",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nBatch approval auto-rejects subsequent operations and prevents iterative step-by-step execution.\n\n### Proposed solution\n\nChange Copilot CLI's execution model to be sequential instead of batch, where each operation is approved/rejected/refined individually before execution, and subsequent operations are planned based on actual results.\n\n**Key improvements:**\n- No cascade rejection - each operation is evaluated independently\n- User can appro",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "Igoraamc",
+      "created_at": "2026-01-03T23:18:47Z",
+      "comment_count": 1,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Sequential approval model instead of batch. Major UX enhancement proposal.",
+      "approved": null
+    },
+    {
+      "number": 878,
+      "title": "MCP error -32602: unknown tool \"get_job_logs\"",
+      "body_preview": "## Summary\nWhen using GitHub Copilot CLI with the built-in GitHub MCP server tools, attempts to call the job log retrieval tool fail with:\n\n> MCP error -32602: unknown tool \"get_job_logs\"\n\nThis happened while trying to debug a failing GitHub Actions workflow run.\n\n## Steps to reproduce\n1. Run `copilot` (tested with Copilot CLI v0.0.374 on macOS).\n2. In a repo with GitHub Actions enabled, ask Copilot CLI to fetch failed job logs for a workflow run (e.g. via the GitHub MCP server tool exposed as `",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "timsearle",
+      "created_at": "2026-01-03T18:22:45Z",
+      "comment_count": 1,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.95,
+      "reasoning": "MCP tool get_job_logs not recognized. Clear bug report with repro steps.",
+      "approved": null
+    },
+    {
+      "number": 875,
+      "title": "Execution failed: CAPIError: Connection error",
+      "body_preview": "### Describe the bug\n\nI'm getting these errors on both: WSL and Windows 11.\n\n```bash\nusername@myname-CP:/mnt/c$ copilot --allow-all-tools\n Welcome to GitHub Copilot CLI\n Version 0.0.374 · Commit 9fecd24\n\n Copilot can write, test and debug code right from your terminal. Describe a task to get started or enter ? for help. Copilot uses AI, check for mistakes.\n\n ● Logged in as user: ghalias\n\n ● Configured MCP servers: microsoft-learn, context7\n\n ● Connected to GitHub MCP Server\n\n > Who are you?\n\n ✗ ",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "oasaleh",
+      "created_at": "2026-01-03T00:15:40Z",
+      "comment_count": 9,
+      "recommended_labels": [
+        "bug",
+        "priority-2",
+        "investigating"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Connection error blocking usage on WSL/Windows. High engagement (9 comments), multiple users affected.",
+      "approved": null
+    },
+    {
+      "number": 869,
+      "title": "Execution failed: Failed to list available models",
+      "body_preview": "### Describe the bug\n\nwhatever i ask, always show this error\n\n### Affected version\n\n0.0.373 Commit: 1f9ed04\n\n### Steps to reproduce the behavior\n\n_No response_\n\n### Expected behavior\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "a1mersnow",
+      "created_at": "2026-01-02T04:47:08Z",
+      "comment_count": 9,
+      "recommended_labels": [
+        "bug",
+        "more-info-needed"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Model listing fails but lacks repro steps. Already assigned, needs more info.",
+      "approved": null
+    },
+    {
+      "number": 868,
+      "title": "Add `--additional-skills` option",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nInside of copilot there's a `/skills add ~/path/to/skill`, but not a way to add them when launching copilot\n\n### Proposed solution\n\nCurrently, users can specify additional map configs with `--additional-mcp-config`.\n\nA similar feature would be nice for skills.\n\nCurrently, users can add additional skills inside of copilot with `/skills add ./skills`, but this requires adding additional skill directories with copilot already launched. And th",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "scaryrawr",
+      "created_at": "2026-01-02T01:39:54Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement",
+        "good first issue"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Add --additional-skills CLI flag. Follows existing pattern, clear spec.",
+      "approved": null
+    },
+    {
+      "number": 867,
+      "title": "Add EDITOR integration for multi-line command editing (like Zsh's edit-command-line)",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nWhen crafting complex, multi-line prompts in Copilot CLI, the built-in line editing (Ctrl+a/e/w/u/) (Alt+f/b) is limited compared to a full text editor. In zsh edit-command-line (bound to Ctrl+X Ctrl+E) which opens the current command buffer in $EDITOR for more powerful editing.\n\n### Proposed solution\n\n Proposed Solution: \n\nAdd a keybinding (e.g., Ctrl+x Ctrl+e, Ctrl+x+e) or (Ctrl+g - similar to claude code keybind) that:\n\n     - Opens the",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "TheRebootr",
+      "created_at": "2026-01-02T01:22:41Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement",
+        "good first issue"
+      ],
+      "confidence": 0.95,
+      "reasoning": "EDITOR integration for multi-line editing. Clear spec with examples.",
+      "approved": null
+    },
+    {
+      "number": 853,
+      "title": "`ctrl+ l` should not clear the conversation, should only clear the screen",
+      "body_preview": "### Describe the bug\n\nIn Linux and similar systems, CTRL + L used to clean the screen. but in copilot, when I did the same shortcut, I found the conversation history removed, instead of just current screen is cleared\n\n### Affected version\n\n_No response_\n\n### Steps to reproduce the behavior\n\nPress CTRL + L in middle of a session\n\n### Expected behavior\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "mhewedy",
+      "created_at": "2025-12-30T11:07:00Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Ctrl+L behavior change - clear screen vs clear conversation. UX preference.",
+      "approved": null
+    },
+    {
+      "number": 852,
+      "title": "FEAT: command to manage skills.",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nWe need to install skills from repo automatically instead of pulling repo, copy/paste.\n\n### Proposed solution\n\nCluade code got a plugin and skill marketplace to manage all the related skills. So any skills repo respect it we can just add the repo and we can install the skills automatically. \n\nCurrently we have to pull the repo and copy skills. \n\n### Example prompts or workflows\n\n/plugin and skill marketplace. See Claude code for more.\n\n###",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "wangdong-sd",
+      "created_at": "2025-12-30T07:41:52Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Command to manage skills. Feature request for skill management.",
+      "approved": null
+    },
+    {
+      "number": 849,
+      "title": "Give Some Sort of Message When a Configured MCP Server Isn't Working",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nWhen configuring a new MCP server, I might make a mistake. Currently this can be hard to detect, as the process for configuring a new server gives no feedback on if the configuration was/is working.\n\n### Proposed solution\n\nTwo ideas:\n1. Immediately test the configuration in the MCP add/edit UX, and inform the user if the test fails.\n2. Give a message in timeline in the when a configured MCP server doesn't work (the CLI wasn't able to get t",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "MRayermannMSFT",
+      "created_at": "2025-12-29T18:53:49Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Show message when MCP server config fails. UX improvement for debugging.",
+      "approved": null
+    },
+    {
+      "number": 848,
+      "title": "Handle `..` During `@` FIle Mention Autocomplete",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nWhen `@` mentioning files, sometimes I need to reference something in a folder which requires navigating up and out of the current directory. Currently the autocomplete logic for the `@` file mentioning doesn't handle this well.\n\n### Proposed solution\n\nUpdate the autocomplete logic for the `@` file mentioning to handle `..`.\n\n### Example prompts or workflows\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "MRayermannMSFT",
+      "created_at": "2025-12-29T18:50:55Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement",
+        "good first issue"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Handle .. in @ file autocomplete. Small UX improvement.",
+      "approved": null
+    },
+    {
+      "number": 847,
+      "title": "Powershell tool requires `pwsh` and fails if I do not have it installed",
+      "body_preview": "### Describe the bug\n\n```\n{\"type\":\"tool.execution_complete\",\"data\":{\"toolCallId\":\"toolu_vrtx_015T42XEjysw1jwbYmh9uEs2\",\"success\":false,\"error\":{\"message\":\"<exited with error: PowerShell 6+ (pwsh) is not available. Please install it from https://aka.ms/powershell. Error: Error: Command failed: pwsh.exe --version\\n'pwsh.exe' is not recognized as an internal or external command,\\r\\noperable program or batch file.\\r\\n>\",\"code\":\"failure\"},\"toolTelemetry\":{\"properties\":{\"customTimeout\":\"true\",\"executi",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "Tonychen0227",
+      "created_at": "2025-12-29T02:34:46Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "good first issue"
+      ],
+      "confidence": 0.90,
+      "reasoning": "PowerShell requires pwsh but should fallback to Windows PS. Simple fix, good for newcomers.",
+      "approved": null
+    },
+    {
+      "number": 844,
+      "title": "Allow running request inside different model without changing of model",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nAllow running request inside different model without changing of model\n\n### Proposed solution\n\nChanging of model is cumbersome and global. I like to be able to daily drive for example Claude 4.5 Sonnet, and be able to do a quick request to Opus. Or, sometimes daily drive Opus, and send a quick request to Chat GPT mini (free). Many times between lots of complicated things you are tempted to ask a simple question for bridge. \n\n### Example pr",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "Napolitain",
+      "created_at": "2025-12-28T15:34:41Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Run single request with different model. Feature request.",
+      "approved": null
+    },
+    {
+      "number": 841,
+      "title": "CRITICAL: Memory leak - @ symbol triggers unbounded heap allocation causing OOM crash",
+      "body_preview": "# Bug: CLI intercepts command names in text responses and attempts to execute them\n\n## Description\nThe GitHub Copilot CLI incorrectly intercepts command names (like `kill`, `pkill`) that appear in **text responses** and attempts to execute them as system commands. This breaks normal conversation context and makes it impossible to discuss certain system utilities.\n\n## Steps to Reproduce\n1. Start a conversation about building OS utilities\n2. Use the `session` command to record text containing word",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "ssfdre38",
+      "created_at": "2025-12-27T03:03:04Z",
+      "comment_count": 3,
+      "recommended_labels": [
+        "bug",
+        "priority-1",
+        "investigating"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Memory leak causing OOM crash - critical stability issue affecting core usage.",
+      "approved": null
+    },
+    {
+      "number": 838,
+      "title": "Vietnamese IME Input Rendering Issue in Copilot CLI Overlay",
+      "body_preview": "### Describe the bug\n\nWhen typing Vietnamese characters using an IME (Input Method Editor) such as Telex or VNI, the characters are not composed correctly within the Copilot CLI input field. Instead of combining marks to form a single accented character, the characters appear fragmented or duplicated (e.g., typing \"ư\" results in \"u ư\").\n\n### Affected version\n\nVersion: 0.0.372\n\n### Steps to reproduce the behavior\n\n1. Launch the Copilot CLI.\n2. Switch the system keyboard input to a Vietnamese IME ",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "nProgrammer94",
+      "created_at": "2025-12-25T09:40:03Z",
+      "comment_count": 1,
+      "recommended_labels": [],
+      "confidence": null,
+      "reasoning": null,
+      "approved": null
+    },
+    {
+      "number": 828,
+      "title": "Bring Smart Context (Summarization & Folding) from VS Code to CLI",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nThe VS Code Copilot extension implements sophisticated context management strategies that appear to be missing from the CLI. Currently, the CLI uses a strict sliding window strategy (truncation) for conversation history. This causes it to \"forget\" instructions from the beginning of a long session as soon as the token limit is reached, making it difficult to maintain context in long-running agentic tasks.\n\n### Proposed solution\n\nPlease brin",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "shariqriazz",
+      "created_at": "2025-12-23T14:37:49Z",
+      "comment_count": 3,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Port VS Code smart context to CLI. Feature parity request.",
+      "approved": null
+    },
+    {
+      "number": 826,
+      "title": "Display mcp tool call parameters in the expanded view",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nTool call parameters are not displayed in the ctrl+r view and causing limited observability for debugging\n\n### Proposed solution\n\nin expanded view, display the tool call parameters like\ntool_name (param1: A, param2: B)\n\n### Example prompts or workflows\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "plusplusoneplusplus",
+      "created_at": "2025-12-22T20:42:53Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement",
+        "good first issue"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Display MCP tool params in expanded view. Small UI improvement.",
+      "approved": null
+    },
+    {
+      "number": 823,
+      "title": "Should allow one to come out of agent mode",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nI can choose a specific agent with `/agent`, but later on when I want to come back to regular mode, I should be able to do so.\n\n### Proposed solution\n\n`/agent` options (dropdown) should have an exit option to exit from `agent` mode.\n\n### Example prompts or workflows\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "vgargatgit",
+      "created_at": "2025-12-22T10:41:26Z",
+      "comment_count": 1,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Allow exiting agent mode. UX control feature.",
+      "approved": null
+    },
+    {
+      "number": 822,
+      "title": "Merge github copilot cli with codex cli",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nContribute to codex cli instead of github copilot cli\n\n### Proposed solution\n\nWe are using github copilot with an enterprise usage for almost 400 developers. As a model we mostly use the codex models, currently codex 5.1 max. The issue is that the codex model doesn't perform really well without codex cli, neither with the github copilot cli nor with github copilot vscode extension. We would prefer that github copilot instead of developing ",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "styler-ai",
+      "created_at": "2025-12-21T10:01:28Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.75,
+      "reasoning": "Merge with codex CLI. Strategic suggestion, not actionable.",
+      "approved": null
+    },
+    {
+      "number": 820,
+      "title": "Add `/resume` slash command to resume or switch sessions inside interactive mode",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nAdd `/resume` slash command to resume or switch sessions inside interactive mode\n\n### Proposed solution\n\n**Problem:**\nCurrently, the Copilot CLI requires users to exit the interactive mode and manually run `copilot --resume` from the shell to restore a previous conversation or session. This creates significant **workflow friction**, especially when a developer needs to switch contexts or revisit a prior session without losing their current",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "SidStraw",
+      "created_at": "2025-12-20T15:32:45Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Add /resume slash command. Clear feature request.",
+      "approved": null
+    },
+    {
+      "number": 819,
+      "title": "I disable Inline suggestions but they still keep coming up",
+      "body_preview": "### Describe the bug\n\n<img width=\"704\" height=\"392\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/04d183a9-4a4e-415e-90ad-007c2e381d2c\" />\n\nI need to go to settings to completely disable why I cant just disable them through the usual button. Maybe there are  two different in line predictors working at the same time? \n\n### Affected version\n\n_No response_\n\n### Steps to reproduce the behavior\n\n_No response_\n\n### Expected behavior\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "kepiz",
+      "created_at": "2025-12-20T07:35:34Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "more-info-needed"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Inline suggestions appearing when disabled. Needs version/steps.",
+      "approved": null
+    },
+    {
+      "number": 818,
+      "title": "Keep getting this error: \"✗ create: create a new file at undefined.\"",
+      "body_preview": "### Describe the bug\n\nI keep getting this error:  ✗ create: create a new file at undefined.\n   Expected ',' or '}' after property value in JSON at position 67 (line 1 column 68).\n\nI am using 0.0.372\nCommit: 5534560.\n\nIt keeps consuming my premium requests and keep failing.\n\n### Affected version\n\n_No response_\n\n### Steps to reproduce the behavior\n\n_No response_\n\n### Expected behavior\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "vgargatgit",
+      "created_at": "2025-12-20T07:32:32Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.90,
+      "reasoning": "JSON parse error in file creation. Error message clear, consumes premium requests.",
+      "approved": null
+    },
+    {
+      "number": 817,
+      "title": "Copilot CLI repeats action output indefinitely during PowerShell commands",
+      "body_preview": "### Describe the bug\n\nThe agent is now getting stuck in a response loop during certain actions and repeating the same output over and over.\n\nThis didn’t happen in previous versions. For instance, when I asked it to check for a DLL file, it echoed the same message repeatedly before finally running the command.\n\n### Affected version\n\n0.0.371 Commit: e3fbcaf\n\n### Steps to reproduce the behavior\n\nIt seems to happen when the agent runs a `Get-ChildItem` command in PowerShell. In my example, I asked i",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "aleacosta5",
+      "created_at": "2025-12-19T23:25:47Z",
+      "comment_count": 1,
+      "recommended_labels": [
+        "bug",
+        "priority-3"
+      ],
+      "confidence": 0.85,
+      "reasoning": "PowerShell output loop regression. Clear repro, lower severity.",
+      "approved": null
+    },
+    {
+      "number": 814,
+      "title": "Every slash command (like /models) should have a cli command",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nMany / commands are only available in interactive mode although they collect data that does not require LLM.\n\n### Proposed solution\n\nHeadless usage of copilot cli in agentic workflows.\n\n### Example prompts or workflows\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "pelikhan",
+      "created_at": "2025-12-19T14:30:52Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.90,
+      "reasoning": "CLI commands for all slash commands. Feature parity request.",
+      "approved": null
+    },
+    {
+      "number": 812,
+      "title": "[Docs] Add note that AGENTS.md is not reloaded after start",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nCopilot CLI does not reload the AGENTS.md file after it has been initialized, this is not mentioned anywhere.\n\n### Proposed solution\n\nAdd a section to the docs https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli#use-custom-instructions that states that if you edit the `AGENTS.md` file you need to quite and restart copilot cli.\n\n### Example prompts or workflows\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "lukasoppermann",
+      "created_at": "2025-12-19T09:14:33Z",
+      "comment_count": 0,
+      "recommended_labels": [],
+      "confidence": null,
+      "reasoning": null,
+      "approved": null
+    },
+    {
+      "number": 810,
+      "title": "Show me want account will be used when running a prompt in non-interactive mode",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nWhen I'm logged into multiple accounts and I want to run Copilot CLI non-interactively, I want to know which account will be used for the requests so that I can expect when I'm billed.\n\n### Proposed solution\n\nA few ideas:\n\n- If I'm logged into 1 account, just run the prompt as normal\n- If I'm logged into multiple accounts, either\n  - prompt me for account selection when I try to run it\n  - support a new `--account` (or `--user`, whatever) ",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "mxie",
+      "created_at": "2025-12-18T18:34:10Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "more-info-needed"
+      ],
+      "confidence": 0.80,
+      "reasoning": "Unclear issue, needs clarification.",
+      "approved": null
+    },
+    {
+      "number": 809,
+      "title": "`/agent` cannot get out of selected mode?",
+      "body_preview": "### Describe the bug\n\nWhen you switch to a custom agent mode, there doesn't appear to be a clear way to get back to the \"default\" agent mode.\n\n### Affected version\n\n0.0.370 Commit: 5188822\n\n### Steps to reproduce the behavior\n\n1. Type `/agent`\n2. Selection an agent\n3. Type `/agent`\n4. Try to select the \"Default\" mode.\n\n[Workaround]\n\nCreate a custom \"Agent\" mode.\n\n### Expected behavior\n\nThere should be a `Default` or `Agent` mode to switch to when I type `/agent` to get out of the custom agent mo",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "scaryrawr",
+      "created_at": "2025-12-18T17:27:56Z",
+      "comment_count": 2,
+      "recommended_labels": [],
+      "confidence": null,
+      "reasoning": null,
+      "approved": null
+    },
+    {
+      "number": 808,
+      "title": "Incorrect terminal width detection in tmux",
+      "body_preview": "### Describe the bug\n\nI'm running copilot cli in my linux terminal inside tmux windows. With the \"expand recent\" option activated, when there are big blocks to show i am seeing the boxes being created 1 or 2 characters too big, resulting in this: \n\n<img width=\"3444\" height=\"1368\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/253dd745-51c0-4cff-b162-3aaf4a97a77e\" />\n\n### Affected version\n\n_No response_\n\n### Steps to reproduce the behavior\n\n_No response_\n\n### Expected behavior\n\n_No r",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "hariseldon78",
+      "created_at": "2025-12-18T15:02:32Z",
+      "comment_count": 0,
+      "recommended_labels": [],
+      "confidence": null,
+      "reasoning": null,
+      "approved": null
+    },
+    {
+      "number": 807,
+      "title": "add session id in the output of non-interactive mode",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\n_No response_\n\n### Proposed solution\n\n➜  git:(main) copilot --allow-all-tools -p \"who are you\"\nI am **GitHub Copilot CLI**, a terminal assistant built by GitHub. I help with software engineering tasks like:\n\n- Exploring and analyzing codebases\n- Making surgical code changes to files\n- Running builds, tests, and debugging\n- Working with Git repositories\n- Executing shell commands and development workflows\n\nI can help you understand the code",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "plusplusoneplusplus",
+      "created_at": "2025-12-18T06:39:51Z",
+      "comment_count": 0,
+      "recommended_labels": [],
+      "confidence": null,
+      "reasoning": null,
+      "approved": null
+    },
+    {
+      "number": 803,
+      "title": "Copilot CLI displays false \"Truncated\" warning when command output uses tail",
+      "body_preview": "### Describe the bug\n\nWhen running commands in Copilot CLI that use `tail` (e.g., piping output such as `tail -5` or `tail -20`), the CLI incorrectly shows a yellow \"Truncated\" warning message. This appears even when the model output is not actually truncated, which is confusing to users—especially in new sessions. It seems Copilot CLI is detecting the \"tail\" command or truncated output as if the Copilot model response was truncated, causing misleading UX.\n\n**Reproduction command example:**\n\n   ",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "721262-cmyk",
+      "created_at": "2025-12-17T18:11:20Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-3"
+      ],
+      "confidence": 0.90,
+      "reasoning": "False truncated warning when using tail. Cosmetic UX issue.",
+      "approved": null
+    },
+    {
+      "number": 797,
+      "title": "Regular expression patterns are mistaken for directories",
+      "body_preview": "### Describe the bug\n\nWhen the agent comes up with some PowerShell to find files, it'll often come up with something like this:\n\n```powershell\n     # Find all logger writes in catch blocks that are NOT Error level\n     $projectPath = \"C:\\Users\\prplecake\\Projects\\[redacted]\"\n     $files = Get-ChildItem -Path $projectPath -Recurse -Include \"*.cs\" -File | Where-Object {\n         $_.FullName -notlike \"*\\obj\\*\" -and\n         $_.FullName -notlike \"*\\bin\\*\" -and\n         $_.FullName -like \"$projectPath",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "prplecake",
+      "created_at": "2025-12-16T16:49:33Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-3"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Regex patterns misinterpreted as directories. PowerShell-specific edge case.",
+      "approved": null
+    },
+    {
+      "number": 793,
+      "title": "Sorry, you have exceeded your Copilot token usage",
+      "body_preview": "### Describe the bug\n\nI am a Pro+ subscriber.  I use CLI, one instance only.  I'll be going fairly steady for a few hours with some short breaks and then I'll look back at the terminal and it'll be filled with these errors and crashed out in the middle of a session that I get charged for and then have to troubleshoot.  \nI can't control how many tokens the CLI is using, I just put in a request.  Could you guys please try to deal with this more gracefully?  \n\n` ✓ Edit ThreeStageFFTConfig.cs\n\n ✓ Ed",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "Echostorm44",
+      "created_at": "2025-12-16T14:17:52Z",
+      "comment_count": 4,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Token limit crashes session. Pro+ subscriber impact, poor error handling.",
+      "approved": null
+    },
+    {
+      "number": 786,
+      "title": "New Flag Request: --confirm-send",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nGuard against accidental API calls.\n\n### Proposed solution\n\nI feel a strongly negative reaction when I accidentally hit enter in the Copilot CLI. This causes my prompt to send while I'm in the middle of writing it.\n\nBesides human error, not all software uses the same style of Enter vs. Shift+Enter for sending vs. newlines. It can be difficult to context swap between programs which use different styles.\n\n**Add a flag**: --confirm-send\n**Wha",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "AlexanderJohnston",
+      "created_at": "2025-12-15T18:13:26Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Add --confirm-send flag. Clear problem/solution.",
+      "approved": null
+    },
+    {
+      "number": 783,
+      "title": "Feature Request: Native Plan Mode Support for GitHub CLI",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nCurrently, GitHub Copilot in VS Code and other tools like Claude Code support a dedicated Plan Mode, which provides structured, actionable plans for code changes and development workflows. However, the GitHub CLI does not natively support a similar plan mode. Some users have worked around this by creating a custom `planmode.agent.md` file for use with the CLI via the `/agent` command, but this approach is hacky and lacks cohesion or standa",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "VeVarunSharma",
+      "created_at": "2025-12-14T06:11:08Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Native Plan Mode support. Well-documented feature request.",
+      "approved": null
+    },
+    {
+      "number": 778,
+      "title": "Sometimes copilot ask for confirmation multiple times",
+      "body_preview": "### Describe the bug\n\nSometimes copilot ask to edit a file and I choose \"Approve all file operations in this session\" I get the same message again (and maybe again and again) short after.\n\n### Affected version\n\nVersion 0.0.358 · Commit f5a8b1e76\n\n### Steps to reproduce the behavior\n\nI assume this happens when copilot wants to edit multiple files at once and I'm not fast enough to approve this, so there is something in the queue or similar that did not recognizes I al ready approved that.\n\n### Ex",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "laeubi",
+      "created_at": "2025-12-13T06:59:19Z",
+      "comment_count": 1,
+      "recommended_labels": [
+        "bug",
+        "priority-3"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Multiple confirmation prompts after approve all. Race condition, lower severity.",
+      "approved": null
+    },
+    {
+      "number": 777,
+      "title": "hope that copilot CLI will support Android devices.",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nhope that copilot CLI will support Android devices.\n\n### Proposed solution\n\nmore users\n\n### Example prompts or workflows\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "uxhzbaz",
+      "created_at": "2025-12-13T03:24:56Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Android device support request. Platform expansion.",
+      "approved": null
+    },
+    {
+      "number": 774,
+      "title": "Bug: CLI intercepts command names in text responses and attempts to execute them",
+      "body_preview": "# Bug: CLI intercepts command names in text responses and attempts to execute them\n\n## Description\nThe GitHub Copilot CLI incorrectly intercepts command names (like `kill`, `pkill`) that appear in **text responses** and attempts to execute them as system commands. This breaks normal conversation context and makes it impossible to discuss certain system utilities.\n\n## Steps to Reproduce\n1. Start a conversation about building OS utilities\n2. Use the `session` command to record text containing word",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "captain-cp-ai",
+      "created_at": "2025-12-12T20:10:20Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.90,
+      "reasoning": "CLI misinterprets command names in text. Clear bug with repro steps.",
+      "approved": null
+    },
+    {
+      "number": 770,
+      "title": "The model Claude Opus 4.5 froze while processing the prompt.",
+      "body_preview": "### Describe the bug\n\nThe model Claude Opus 4.5 froze while processing the prompt. And it happened 3 times in a row. 3 premium requests were used, 3x each! -_- That is frustrating/infuriating. Please fix things like this so that premium requests are not deducted during a freeze or a bug! Thank you.\n\n### Affected version\n\n0.0.369\n\n### Steps to reproduce the behavior\n\n_No response_\n\n### Expected behavior\n\n_No response_\n\n### Additional context\n\n_No response_",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "StanGar30",
+      "created_at": "2025-12-12T13:17:23Z",
+      "comment_count": 15,
+      "recommended_labels": [
+        "bug",
+        "more-info-needed"
+      ],
+      "confidence": 0.80,
+      "reasoning": "Claude Opus freeze consuming premium requests. Needs more repro details.",
+      "approved": null
+    },
+    {
+      "number": 768,
+      "title": "Option to disable MCP Servers per default",
+      "body_preview": "### Describe the feature or problem you'd like to solve\n\nI would like to have the option to define mcp servers, but disable them by default to save tokens. If necessary, I would like to be able to simply switch them on.\n\n### Proposed solution\n\nPreferably an option that is persisted in mcp-config.json.\n\n```\n   \"jetbrains\": {\n      \"tools\": [\"*\"],\n      \"type\": \"sse\",\n      \"url\": \"http://localhost:64342/sse\",\n      \"headers\": {},\n      \"disabled\": true\n    }\n```\n\n### Example prompts or workflows\n",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "mrclrchtr",
+      "created_at": "2025-12-12T10:07:23Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "enhancement"
+      ],
+      "confidence": 0.95,
+      "reasoning": "Option to disable MCP servers by default. Clear proposal with JSON example.",
+      "approved": null
+    },
+    {
+      "number": 763,
+      "title": "Heavy docker use results in redundant confirmations",
+      "body_preview": "### Describe the bug\n\nI use docker for everything, that means copilot is using `docker -v...` and EVERY TIME it asks for confirmation of something like `/app` because the command is `docker -v ./something:/app`\n\nHighly annoying as there is no real way to \"allow\" the directory\n\n### Affected version\n\n0.0.369 Commit: 83653a1\n\n### Steps to reproduce the behavior\n\n1. run with docker heavy usage\n2. wait for it to try mount something\n3. get asked if it is ok to use directory of mount location\n\n### Expe",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "dogmatic69",
+      "created_at": "2025-12-11T22:34:14Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-3"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Docker mount paths trigger redundant confirmations. Annoyance, not blocking.",
+      "approved": null
+    },
+    {
+      "number": 762,
+      "title": "Copilot CLI — tool_use ids were found without tool_result",
+      "body_preview": "### Describe the bug\n\nNot sure of exact repo but here's what I did:\n\n1. Start copilot cli session with basic question \n2. Switch away to a different session\n3. Ask follow up question \n\n**Bug**\nI see a bunch of errors like\n\n```\nError: {\"message\":\"messages.8: tool_use ids were found without tool_result blocks immediately after: toolu_016mG9beSSzCRVShZXzKY4FR, toolu_01RzMce8t2PzzBe7Qfj7Rjhr. Each tool_use block must have a corresponding tool_result block in the next message.\",\"code\":\"invalid_reques",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "DonJayamanne",
+      "created_at": "2025-12-11T21:41:54Z",
+      "comment_count": 0,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.85,
+      "reasoning": "Tool use/result mismatch error. Session state corruption issue.",
+      "approved": null
+    },
+    {
+      "number": 760,
+      "title": "The --additional-mcp-config is not working",
+      "body_preview": "### Describe the bug\n\n_No response_\n\n### Affected version\n\n0.0.368 Commit: baffc7e\n\n### Steps to reproduce the behavior\n\nPlease see my screenshot:\n\n<img width=\"2052\" height=\"1180\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/b4e36619-b6d7-46ff-bbed-ec8bfcac3099\" />\n\nThe image shows a PowerShell terminal session where GitHub Copilot CLI is being launched with an MCP (Model Context Protocol) configuration, but the MCP server is not actually being loaded despite the configuration fil",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "doggy8088",
+      "created_at": "2025-12-11T15:41:00Z",
+      "comment_count": 3,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.90,
+      "reasoning": "MCP config flag not working. Clear screenshot evidence.",
+      "approved": null
+    },
+    {
+      "number": 758,
+      "title": "Copilot CLI 0.0.368: internal bash/edit/create tool calls fail with TypeError and JSON parse errors",
+      "body_preview": "### Describe the bug\n\nDescription\n\nWhen using GitHub Copilot CLI in agent mode, several internal tool calls fail systematically:\n\nbash tool calls with empty arguments fail with:\nTypeError: Cannot read properties of undefined (reading 'match').​\n\nedit and create tool calls fail with JSON parse errors such as:\nExpected ',' or '}' after property value in JSON at position 55 (line 1 column 56)\nor\nExpected ',' or '}' after property value in JSON at position 40 (line 1 column 41).​\n\nThese errors occur",
+      "current_labels": [
+        "triage"
+      ],
+      "author": "ecourn",
+      "created_at": "2025-12-11T12:50:37Z",
+      "comment_count": 2,
+      "recommended_labels": [
+        "bug",
+        "priority-2"
+      ],
+      "confidence": 0.90,
+      "reasoning": "Tool calls fail with TypeError/JSON errors. Systematic failures affecting core functionality.",
+      "approved": null
+    }
+  ]
+}

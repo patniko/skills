@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Label Review</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --orange: #d29922;
+            --purple: #a371f7;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        h1 { font-size: 24px; font-weight: 600; }
+        .meta { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+        
+        .actions { display: flex; gap: 12px; }
+        button {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        button:hover { opacity: 0.9; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        button.success { background: var(--green); }
+        button.danger { background: var(--red); }
+        
+        .stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 32px; font-weight: 700; }
+        .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+        
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .filters select, .filters input {
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .issue-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        .issue-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            transition: border-color 0.2s;
+        }
+        .issue-card:hover { border-color: var(--accent); }
+        .issue-card.approved { border-left: 4px solid var(--green); }
+        .issue-card.rejected { border-left: 4px solid var(--red); opacity: 0.6; }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .issue-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .issue-number {
+            color: var(--text-muted);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .issue-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .issue-title a {
+            color: var(--text);
+            text-decoration: none;
+        }
+        .issue-title a:hover { color: var(--accent); }
+        
+        .issue-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        
+        .issue-body {
+            background: var(--bg-tertiary);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .issue-body::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, var(--bg-tertiary));
+        }
+        
+        .labels-section {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 12px;
+        }
+        .labels-group { flex: 1; }
+        .labels-group-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .label {
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .label.current {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+        .label.recommended {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        .label.removable {
+            cursor: pointer;
+        }
+        .label.removable:hover {
+            opacity: 0.7;
+        }
+        
+        .reasoning {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--purple);
+            padding: 12px;
+            border-radius: 0 6px 6px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .reasoning strong { color: var(--text); }
+        
+        .confidence {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .confidence-bar {
+            width: 60px;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+        
+        .issue-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .issue-actions button { padding: 6px 12px; font-size: 13px; }
+        
+        .add-label-input {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .add-label-input select {
+            flex: 1;
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .add-label-input button {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--green);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+        .toast.show { display: block; }
+        .toast.error { background: var(--red); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🏷️ Issue Label Review</h1>
+                <div class="meta" id="repo-info">Loading...</div>
+            </div>
+            <div class="actions">
+                <button class="secondary" onclick="document.getElementById('file-input').click()">Load Data</button>
+                <button class="secondary" onclick="exportApproved()">Export Approved</button>
+                <button class="success" onclick="submitAll()" id="submit-btn" disabled>Submit All Approved</button>
+                <input type="file" id="file-input" accept=".json" style="display:none" onchange="loadFile(event)">
+            </div>
+        </header>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div class="filters">
+            <select id="filter-status" onchange="renderList()">
+                <option value="all">All Issues</option>
+                <option value="pending">Pending Review</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <input type="text" id="search" placeholder="Search issues..." oninput="renderList()">
+        </div>
+        
+        <div class="issue-list" id="issue-list"></div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let data = null;
+        
+        // Auto-load
+        fetch('recommendations.json')
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(json => { data = json; init(); })
+            .catch(() => {
+                document.getElementById('repo-info').textContent = 'No data loaded - click "Load Data"';
+            });
+        
+        function loadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        data = JSON.parse(e.target.result);
+                        init();
+                    } catch (err) {
+                        showToast('Invalid JSON file', true);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+        
+        function init() {
+            document.getElementById('repo-info').textContent = 
+                `${data.metadata.repository} • ${data.recommendations.length} issues • Generated ${new Date(data.metadata.generated).toLocaleString()}`;
+            renderStats();
+            renderList();
+        }
+        
+        function renderStats() {
+            const recs = data.recommendations;
+            const pending = recs.filter(r => r.approved === null).length;
+            const approved = recs.filter(r => r.approved === true).length;
+            const rejected = recs.filter(r => r.approved === false).length;
+            const withRecs = recs.filter(r => r.recommended_labels.length > 0).length;
+            
+            document.getElementById('stats').innerHTML = `
+                <div class="stat">
+                    <div class="stat-value">${recs.length}</div>
+                    <div class="stat-label">Total Issues</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--orange)">${pending}</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--green)">${approved}</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--red)">${rejected}</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color:var(--purple)">${withRecs}</div>
+                    <div class="stat-label">With Recommendations</div>
+                </div>
+            `;
+            
+            document.getElementById('submit-btn').disabled = approved === 0;
+        }
+        
+        function renderList() {
+            const filter = document.getElementById('filter-status').value;
+            const search = document.getElementById('search').value.toLowerCase();
+            
+            let recs = data.recommendations;
+            
+            if (filter === 'pending') recs = recs.filter(r => r.approved === null);
+            else if (filter === 'approved') recs = recs.filter(r => r.approved === true);
+            else if (filter === 'rejected') recs = recs.filter(r => r.approved === false);
+            
+            if (search) {
+                recs = recs.filter(r => 
+                    r.title.toLowerCase().includes(search) || 
+                    r.number.toString().includes(search)
+                );
+            }
+            
+            const container = document.getElementById('issue-list');
+            
+            if (!recs.length) {
+                container.innerHTML = '<div class="empty-state">No issues match your filters</div>';
+                return;
+            }
+            
+            container.innerHTML = recs.map(r => {
+                const statusClass = r.approved === true ? 'approved' : r.approved === false ? 'rejected' : '';
+                const confidenceColor = r.confidence >= 0.8 ? 'var(--green)' : r.confidence >= 0.5 ? 'var(--orange)' : 'var(--red)';
+                
+                return `
+                    <div class="issue-card ${statusClass}" data-number="${r.number}">
+                        <div class="issue-header">
+                            <div class="issue-title-row">
+                                <span class="issue-number">#${r.number}</span>
+                                <span class="issue-title">
+                                    <a href="https://github.com/${data.metadata.repository}/issues/${r.number}" target="_blank">${escapeHtml(r.title)}</a>
+                                </span>
+                            </div>
+                            ${r.confidence !== null ? `
+                                <div class="confidence">
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill" style="width:${r.confidence * 100}%;background:${confidenceColor}"></div>
+                                    </div>
+                                    ${Math.round(r.confidence * 100)}%
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="issue-meta">
+                            <span>👤 ${r.author}</span>
+                            <span>💬 ${r.comment_count} comments</span>
+                            <span>📅 ${new Date(r.created_at).toLocaleDateString()}</span>
+                        </div>
+                        
+                        ${r.body_preview ? `
+                            <div class="issue-body">${escapeHtml(r.body_preview)}</div>
+                        ` : ''}
+                        
+                        <div class="labels-section">
+                            <div class="labels-group">
+                                <div class="labels-group-title">Current Labels</div>
+                                <div class="labels">
+                                    ${r.current_labels.length ? r.current_labels.map(l => `<span class="label current">${l}</span>`).join('') : '<span style="color:var(--text-muted);font-size:12px">None</span>'}
+                                </div>
+                            </div>
+                            <div class="labels-group">
+                                <div class="labels-group-title">Recommended Labels</div>
+                                <div class="labels" id="labels-${r.number}">
+                                    ${r.recommended_labels.length ? r.recommended_labels.map(l => `
+                                        <span class="label recommended removable" onclick="removeLabel(${r.number}, '${l}')">${l} ✕</span>
+                                    `).join('') : '<span style="color:var(--text-muted);font-size:12px">No recommendations</span>'}
+                                </div>
+                                <div class="add-label-input">
+                                    <select id="add-label-select-${r.number}">
+                                        <option value="">Add label...</option>
+                                        ${data.available_labels.map(l => `<option value="${l.name}">${l.name}</option>`).join('')}
+                                    </select>
+                                    <button class="secondary" onclick="addLabel(${r.number})">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${r.reasoning ? `
+                            <div class="reasoning">
+                                <strong>Reasoning:</strong> ${escapeHtml(r.reasoning)}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="issue-actions">
+                            <button class="danger" onclick="reject(${r.number})" ${r.approved === false ? 'disabled' : ''}>Reject</button>
+                            <button class="success" onclick="approve(${r.number})" ${r.approved === true ? 'disabled' : ''}>Approve</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function findRec(number) {
+            return data.recommendations.find(r => r.number === number);
+        }
+        
+        function approve(number) {
+            const rec = findRec(number);
+            if (rec) {
+                rec.approved = true;
+                renderStats();
+                renderList();
+                showToast(`Approved #${number}`);
+            }
+        }
+        
+        function reject(number) {
+            const rec = findRec(number);
+            if (rec) {
+                rec.approved = false;
+                renderStats();
+                renderList();
+                showToast(`Rejected #${number}`);
+            }
+        }
+        
+        function addLabel(number) {
+            const select = document.getElementById(`add-label-select-${number}`);
+            const label = select.value;
+            if (!label) return;
+            
+            const rec = findRec(number);
+            if (rec && !rec.recommended_labels.includes(label)) {
+                rec.recommended_labels.push(label);
+                select.value = '';
+                renderList();
+            }
+        }
+        
+        function removeLabel(number, label) {
+            const rec = findRec(number);
+            if (rec) {
+                rec.recommended_labels = rec.recommended_labels.filter(l => l !== label);
+                renderList();
+            }
+        }
+        
+        function exportApproved() {
+            const approved = {
+                metadata: data.metadata,
+                available_labels: data.available_labels,
+                recommendations: data.recommendations.filter(r => r.approved === true)
+            };
+            
+            const blob = new Blob([JSON.stringify(approved, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'recommendations-approved.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast(`Exported ${approved.recommendations.length} approved recommendations`);
+        }
+        
+        function submitAll() {
+            const approved = data.recommendations.filter(r => r.approved === true);
+            if (!approved.length) {
+                showToast('No approved recommendations', true);
+                return;
+            }
+            
+            // Generate gh commands
+            const commands = approved.map(r => {
+                const labels = r.recommended_labels.join(',');
+                return `gh issue edit ${r.number} --repo ${data.metadata.repository} --add-label "${labels}"`;
+            });
+            
+            // Show commands in a modal or copy to clipboard
+            const script = commands.join('\n');
+            navigator.clipboard.writeText(script).then(() => {
+                showToast(`Copied ${commands.length} commands to clipboard! Paste in terminal to apply.`);
+            }).catch(() => {
+                // Fallback: show in alert
+                alert('Run these commands:\n\n' + script);
+            });
+        }
+        
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => toast.className = 'toast', 3000);
+        }
+    </script>
+</body>
+</html>
