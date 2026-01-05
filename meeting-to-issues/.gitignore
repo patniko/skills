@@ -1,0 +1,5 @@
+transcript.txt
+proposed-issues.json
+created-issues.json
+*.json
+!package.json
