@@ -407,6 +407,18 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 }}
             }});
         }}
+        
+        function copyExecutiveSummary() {{
+            const summaryText = document.getElementById('executiveSummaryText').textContent;
+            navigator.clipboard.writeText(summaryText).then(() => {{
+                const button = document.getElementById('copyButton');
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                setTimeout(() => {{
+                    button.textContent = originalText;
+                }}, 2000);
+            }});
+        }}
     </script>
 </body>
 </html>
@@ -519,6 +531,135 @@ def generate_category_summary(all_items):
     html_parts.append('</div>')
     
     return ''.join(html_parts)
+
+
+def generate_executive_summary(all_items, repos, date_range, total_prs, total_issues, total_contributors):
+    """Generate executive summary text that can be copied."""
+    if not all_items:
+        return ''
+    
+    # Categorize all items
+    categories = defaultdict(list)
+    for item in all_items:
+        category = categorize_item(item['title'], item['type'])
+        categories[category].append(item)
+    
+    # Identify customer-facing features (exclude internal/infra items)
+    def is_customer_facing(item):
+        title_lower = item['title'].lower()
+        
+        # Exclude internal infrastructure
+        if any(word in title_lower for word in ['chore:', 'chore ', 'test:', 'ci:', 'refactor:', 
+                                                  'deps:', 'bump', 'migrate', 'cleanup', 
+                                                  'internal', 'telemetry', 'logging']):
+            return False
+        
+        # Include clear customer features
+        if any(word in title_lower for word in ['skill', 'agent', 'tool', 'command', '/context', 
+                                                  '/compact', 'slash', 'model', 'auth', 'login',
+                                                  'handoff', 'continuity', 'resume', 'homebrew',
+                                                  'winget', 'install', 'tab completion', 'picker',
+                                                  'web fetch', 'github tool', 'mcp']):
+            return True
+        
+        # Include bug fixes
+        if item['type'] == 'PR' and any(word in title_lower for word in ['fix', 'bug', 'error']):
+            return True
+        
+        return False
+    
+    customer_facing_items = [item for item in all_items if is_customer_facing(item)]
+    
+    # Sort categories by count
+    sorted_categories = sorted(categories.items(), key=lambda x: len(x[1]), reverse=True)
+    
+    # Build text summary
+    lines = []
+    lines.append(f"SHIPMENT REPORT: {date_range}")
+    lines.append(f"Repositories: {', '.join(repos)}")
+    lines.append("")
+    lines.append("EXECUTIVE SUMMARY")
+    lines.append(f"• {len(customer_facing_items)} Customer-Facing Features Shipped")
+    lines.append(f"• {total_prs} Total Pull Requests Merged")
+    lines.append(f"• {total_issues} Issues Closed")
+    lines.append(f"• {total_contributors} Contributors")
+    lines.append("")
+    lines.append("KEY CUSTOMER-FACING FEATURES")
+    lines.append("")
+    
+    # Extract and group customer features by type
+    feature_groups = defaultdict(list)
+    for item in customer_facing_items:
+        title = item['title']
+        title_lower = title.lower()
+        
+        if any(word in title_lower for word in ['skill', 'agent']):
+            feature_groups['New Agent Skills & Capabilities'].append(title)
+        elif any(word in title_lower for word in ['/context', '/compact', 'slash', 'command']):
+            feature_groups['New Commands & Features'].append(title)
+        elif any(word in title_lower for word in ['tool', 'mcp', 'github', 'web fetch']):
+            feature_groups['Tool Integrations'].append(title)
+        elif any(word in title_lower for word in ['model', 'picker', 'llm']):
+            feature_groups['Model Management'].append(title)
+        elif any(word in title_lower for word in ['auth', 'login', 'device code']):
+            feature_groups['Authentication'].append(title)
+        elif any(word in title_lower for word in ['handoff', 'continuity', 'resume', 'remote']):
+            feature_groups['Cross-Platform Continuity'].append(title)
+        elif any(word in title_lower for word in ['homebrew', 'winget', 'install', 'publish']):
+            feature_groups['Distribution & Installation'].append(title)
+        elif any(word in title_lower for word in ['ui', 'ux', 'display', 'tab completion']):
+            feature_groups['User Experience Improvements'].append(title)
+        elif any(word in title_lower for word in ['fix', 'bug', 'error']):
+            feature_groups['Bug Fixes'].append(title)
+        else:
+            feature_groups['Other Features'].append(title)
+    
+    # Sort feature groups by priority for executives
+    priority_order = [
+        'New Agent Skills & Capabilities',
+        'New Commands & Features',
+        'Tool Integrations',
+        'Cross-Platform Continuity',
+        'Model Management',
+        'Distribution & Installation',
+        'User Experience Improvements',
+        'Authentication',
+        'Bug Fixes',
+        'Other Features'
+    ]
+    
+    for group_name in priority_order:
+        if group_name in feature_groups and feature_groups[group_name]:
+            features = feature_groups[group_name]
+            lines.append(f"{group_name} ({len(features)} items):")
+            # Show top 8 items per category
+            for feature in features[:8]:
+                # Clean up the title for better readability
+                clean_title = feature.replace('[CLI]', '').replace('[CLI/CCA]', '').replace('CLI:', '').strip()
+                lines.append(f"  • {clean_title}")
+            if len(features) > 8:
+                lines.append(f"  • ...and {len(features) - 8} more")
+            lines.append("")
+    
+    lines.append("")
+    lines.append("DETAILED BREAKDOWN BY CATEGORY")
+    for category, items in sorted_categories:
+        lines.append(f"• {category}: {len(items)} items")
+    
+    summary_text = '\n'.join(lines)
+    
+    # Build HTML
+    html = f'''
+        <div class="executive-summary">
+            <h3>
+                <span>📄 Executive Summary</span>
+            </h3>
+            <div class="executive-summary-content" id="executiveSummaryText">{escape(summary_text)}</div>
+            <button class="copy-button" id="copyButton" onclick="copyExecutiveSummary()">📋 Copy to Clipboard</button>
+        </div>
+    '''
+    
+    return html
 
 
 def generate_items_html(items_by_repo):
@@ -672,6 +813,7 @@ def main():
         total_issues=total_issues,
         total_items=len(all_items),
         total_contributors=len(contributors),
+        executive_summary=generate_executive_summary(all_items, repos, date_range, total_prs, total_issues, len(contributors)),
         category_summary=generate_category_summary(all_items),
         timeline_bars=generate_timeline_bars(all_items, args.since, until_str),
         items_html=generate_items_html(items_by_repo),
