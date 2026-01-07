@@ -132,12 +132,8 @@ async function spawnTmux(command: string): Promise<boolean> {
   const existingPaneId = await getCanvasPaneId();
 
   if (existingPaneId) {
-    // Try to reuse existing pane
-    const reused = await reuseExistingPane(existingPaneId, command);
-    if (reused) {
-      return true;
-    }
-    // Reuse failed (pane may have been closed) - clear stale reference and create new
+    // Don't reuse - the reuse logic doesn't work well with complex shell commands
+    // Just clear the reference so we create a new pane
     await Bun.write(CANVAS_PANE_FILE, "");
   }
 

@@ -120,6 +120,13 @@ bun run src/cli.ts spawn calendar --scenario meeting-picker --config '{
 Read-only markdown document.
 
 ```bash
+# Spawn in new tmux pane (recommended)
+bun run src/cli.ts spawn document --config '{
+  "content": "# Hello World\n\nThis is **markdown**.",
+  "title": "My Document"
+}'
+
+# Or show inline in current terminal
 bun run src/cli.ts show document --config '{
   "content": "# Hello World\n\nThis is **markdown**.",
   "title": "My Document"
@@ -312,7 +319,7 @@ bun run src/cli.ts spawn calendar --scenario meeting-picker --config '{
 # User: "Show me the email draft"
 # You: Display email in document canvas
 
-bun run src/cli.ts show document --scenario email-preview --config '{
+bun run src/cli.ts spawn document --config '{
   "content": "Dear Team,\n\nPlease review...",
   "title": "Email Draft"
 }'
