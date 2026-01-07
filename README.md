@@ -16,6 +16,7 @@ Each skill is a directory containing:
 
 | Skill | Description |
 |-------|-------------|
+| [canvas](./canvas/) | Spawn interactive terminal TUI components (calendars, documents, flight bookings) with tmux integration |
 | [issue-triage](./issue-triage/) | Fetch and organize GitHub issues to identify what to work on next |
 | [scorecard-update](./scorecard-update/) | Review Azure dashboards and update Google Sheets scorecard via browser automation |
 
